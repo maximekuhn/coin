@@ -1,0 +1,8 @@
+# rust build dir
+/target
+
+# dev database
+coin.sqlite3
+
+# sqlx tests tmp dir
+/crates/database/target

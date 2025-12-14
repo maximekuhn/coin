@@ -1,0 +1,13 @@
+[package]
+name = "application"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chrono = { workspace = true }
+email_address = { workspace = true }
+thiserror = { workspace = true }
+
+# workspace crates
+domain = { workspace = true }
+database = { workspace = true }

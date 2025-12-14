@@ -1,0 +1,5 @@
+# Sample configuration for local development.
+database: "coin.sqlite3"
+domain: NULL
+log:
+  level: DEBUG

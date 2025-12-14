@@ -1,0 +1,7 @@
+CREATE TABLE user (
+    id BLOB(16) PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    role INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL
+);

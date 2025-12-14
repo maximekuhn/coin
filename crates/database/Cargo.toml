@@ -1,0 +1,17 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+email_address = { workspace = true }
+sqlx = { version = "0.8.6", features = ["chrono", "migrate", "runtime-tokio", "sqlite", "uuid"] }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+
+# workspace crates
+auth-models = { workspace = true }
+domain = { workspace = true }
+
+[dev-dependencies]
+rstest = { workspace = true }

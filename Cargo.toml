@@ -1,0 +1,19 @@
+[workspace]
+resolver="3"
+members = ["crates/application", "crates/auth-models", "crates/database", "crates/domain", "crates/rest-api"]
+
+[workspace.dependencies]
+chrono = "0.4.42"
+derive-new = "0.7.0"
+email_address = "0.2.9"
+rstest = "0.26.1"
+serde = { version = "1.0.228", features = ["derive"] }
+thiserror = "2.0.17"
+tracing = "0.1"
+uuid = { version = "1.19.0", features = ["serde", "v4", "v7"] }
+
+# workspace crates
+application = { path = "./crates/application" }
+auth-models = { path = "./crates/auth-models" }
+domain = { path = "./crates/domain", features = ["testutils"] }
+database = { path = "./crates/database" }
