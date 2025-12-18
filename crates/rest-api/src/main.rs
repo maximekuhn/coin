@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use axum::{
-    Router,
+    Router, middleware,
     routing::{get, post},
 };
 use tower::ServiceBuilder;
@@ -55,7 +55,10 @@ fn routes(state: AppState) -> Router {
         ServiceBuilder::new()
             .layer(middlewares::request_id::set_request_id_layer())
             .layer(middlewares::request_id::propagate_request_id_layer())
-            .layer(middlewares::trace::trace_layer()),
+            .layer(middlewares::trace::trace_layer())
+            .layer(middleware::from_fn(
+                middlewares::sleep_unauthorized::sleep_on_401,
+            )),
     )
 }
 
