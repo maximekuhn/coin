@@ -28,3 +28,4 @@ application = { workspace = true }
 auth-models = { workspace = true }
 database = { workspace = true }
 domain = { workspace = true }
+rand = "0.9.2"
