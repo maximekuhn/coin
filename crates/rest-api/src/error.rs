@@ -130,3 +130,13 @@ impl From<crate::auth::password::Error> for ApiError {
         }
     }
 }
+
+impl From<domain::types::groupname::Error> for ApiError {
+    fn from(err: domain::types::groupname::Error) -> Self {
+        Self {
+            kind: ErrorKind::InvalidInput,
+            message: Some(err.to_string()),
+            detail: None,
+        }
+    }
+}

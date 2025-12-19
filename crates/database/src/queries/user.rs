@@ -82,3 +82,20 @@ pub async fn get_by_id(
     };
     Ok(Some(row.try_into()?))
 }
+
+pub async fn exists_by_id(
+    tx: &mut crate::Transaction<'_>,
+    id: &UserId,
+) -> Result<bool, crate::Error> {
+    Ok(sqlx::query_as::<_, (Uuid,)>(
+        r#"
+        SELECT id
+        FROM user
+        WHERE id = ?
+        "#,
+    )
+    .bind(id.value())
+    .fetch_optional(tx.as_mut())
+    .await?
+    .is_some())
+}

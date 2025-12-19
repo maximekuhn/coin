@@ -3,7 +3,7 @@ use email_address::EmailAddress;
 
 use crate::types::{role::Role, user_id::UserId, username::Username};
 
-#[derive(derive_new::new)]
+#[derive(derive_new::new, Debug, PartialEq)]
 pub struct User {
     pub id: UserId,
     pub name: Username,
