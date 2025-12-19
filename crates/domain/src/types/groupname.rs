@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+#[derive(Debug, PartialEq)]
 pub struct Groupname {
     val: String,
 }

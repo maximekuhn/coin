@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct GroupId {
     val: Uuid,
 }

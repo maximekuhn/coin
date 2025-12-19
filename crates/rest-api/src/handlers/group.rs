@@ -1,5 +1,13 @@
-use application::commands::create_empty_group::{CreateEmptyGroupCommand, CreateEmptyGroupError};
-use axum::{Json, extract::State};
+use application::commands::{
+    add_group_member::{AddGroupMemberCommand, AddGroupMemberError},
+    create_empty_group::{CreateEmptyGroupCommand, CreateEmptyGroupError},
+};
+use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+};
+use domain::types::{group_id::GroupId, user_id::UserId};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -33,6 +41,32 @@ pub async fn create(
     }))
 }
 
+pub async fn add_member(
+    State(state): State<AppState>,
+    User(user, _, _): User,
+    Path(group_id): Path<Uuid>,
+    Json(body): Json<AddMemberBody>,
+) -> Result<StatusCode, ApiError> {
+    let group_id = GroupId::new(group_id)?;
+    let new_member_id = UserId::new(body.user_id)?;
+    let current_user_id = user.id;
+
+    let mut tx = state.db_pool.begin().await?;
+
+    AddGroupMemberCommand {
+        group_id,
+        user_id_to_add: new_member_id,
+        current_user_id,
+    }
+    .handle(&mut tx)
+    .await
+    .map_err(add_member_err_to_api_error)?;
+
+    tx.commit().await?;
+
+    Ok(StatusCode::NO_CONTENT)
+}
+
 #[derive(Deserialize)]
 pub struct CreateBody {
     name: String,
@@ -42,6 +76,12 @@ pub struct CreateBody {
 #[serde(rename_all = "camelCase")]
 pub struct CreateResponse {
     group_id: Uuid,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AddMemberBody {
+    user_id: Uuid,
 }
 
 fn create_empty_group_err_to_api_error(err: CreateEmptyGroupError) -> ApiError {
@@ -64,6 +104,36 @@ fn create_empty_group_err_to_api_error(err: CreateEmptyGroupError) -> ApiError {
             kind: ErrorKind::Internal,
             message: None,
             detail: Some(error.to_string()),
+        },
+    }
+}
+
+fn add_member_err_to_api_error(err: AddGroupMemberError) -> ApiError {
+    match err {
+        AddGroupMemberError::NotOwner => ApiError {
+            kind: ErrorKind::ActionForbidden,
+            message: None,
+            detail: None,
+        },
+        AddGroupMemberError::GroupNotFound => ApiError {
+            kind: ErrorKind::NotFound,
+            message: Some("group not found".to_string()),
+            detail: None,
+        },
+        AddGroupMemberError::AlreadyMember => ApiError {
+            kind: ErrorKind::Conflict,
+            message: Some(err.to_string()),
+            detail: None,
+        },
+        AddGroupMemberError::Database(error) => ApiError {
+            kind: ErrorKind::Internal,
+            message: None,
+            detail: Some(error.to_string()),
+        },
+        AddGroupMemberError::UserNotFound => ApiError {
+            kind: ErrorKind::NotFound,
+            message: Some("user to add not found".to_string()),
+            detail: None,
         },
     }
 }

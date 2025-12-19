@@ -13,3 +13,15 @@ pub fn trip_to_europe_2025() -> domain::entities::Group {
             .to_utc(),
     )
 }
+
+pub fn john_and_bill_shared_expenses() -> domain::entities::Group {
+    TestGroup::new_valid(
+        Uuid::parse_str("019b37f428ff7b9dbe10b91f7a0dec74").unwrap(),
+        "John and Bill shared expenses",
+        super::users::johndoe().id.value(),
+        vec![super::users::bill().id.value()],
+        DateTime::parse_from_rfc3339("2025-10-23T09:00:50Z")
+            .unwrap()
+            .to_utc(),
+    )
+}

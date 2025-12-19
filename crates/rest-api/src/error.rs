@@ -26,6 +26,8 @@ pub enum ErrorKind {
     Internal,
     InvalidCredentials,
     SessionExpired,
+    ActionForbidden,
+    NotFound,
 }
 
 impl std::fmt::Display for ErrorKind {
@@ -39,6 +41,8 @@ impl std::fmt::Display for ErrorKind {
                 ErrorKind::Internal => "internal",
                 ErrorKind::InvalidCredentials => "invalid-credentials",
                 ErrorKind::SessionExpired => "session-expired",
+                ErrorKind::ActionForbidden => "action-forbidden",
+                ErrorKind::NotFound => "not-found",
             }
         )
     }
@@ -67,6 +71,8 @@ impl IntoResponse for ApiError {
             ErrorKind::Internal => (StatusCode::INTERNAL_SERVER_ERROR, None),
             ErrorKind::InvalidCredentials => (StatusCode::UNAUTHORIZED, None),
             ErrorKind::SessionExpired => (StatusCode::UNAUTHORIZED, None),
+            ErrorKind::ActionForbidden => (StatusCode::FORBIDDEN, None),
+            ErrorKind::NotFound => (StatusCode::NOT_FOUND, Some(&self)),
         };
 
         if status_code.is_server_error() {
@@ -133,6 +139,26 @@ impl From<crate::auth::password::Error> for ApiError {
 
 impl From<domain::types::groupname::Error> for ApiError {
     fn from(err: domain::types::groupname::Error) -> Self {
+        Self {
+            kind: ErrorKind::InvalidInput,
+            message: Some(err.to_string()),
+            detail: None,
+        }
+    }
+}
+
+impl From<domain::types::group_id::Error> for ApiError {
+    fn from(err: domain::types::group_id::Error) -> Self {
+        Self {
+            kind: ErrorKind::InvalidInput,
+            message: Some(err.to_string()),
+            detail: None,
+        }
+    }
+}
+
+impl From<domain::types::user_id::Error> for ApiError {
+    fn from(err: domain::types::user_id::Error) -> Self {
         Self {
             kind: ErrorKind::InvalidInput,
             message: Some(err.to_string()),

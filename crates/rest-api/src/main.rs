@@ -49,6 +49,7 @@ fn routes(state: AppState) -> Router {
         .route("/auth/login", post(handlers::auth::login))
         .route("/auth/logout", post(handlers::auth::logout))
         .route("/groups", post(handlers::group::create))
+        .route("/groups/{group_id}", post(handlers::group::add_member))
         .route("/hello", get(handlers::dummy::hello_user))
         .with_state(state);
 
