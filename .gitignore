@@ -6,3 +6,6 @@ coin.sqlite3
 
 # sqlx tests tmp dir
 /crates/database/target
+
+# application tests tmp dir
+/crates/application/test-db

@@ -11,3 +11,9 @@ thiserror = { workspace = true }
 # workspace crates
 domain = { workspace = true }
 database = { workspace = true }
+
+[dev-dependencies]
+anyhow = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+

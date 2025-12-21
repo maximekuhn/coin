@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.100"
+anyhow = { workspace = true }
 argon2 = "0.5.3"
 axum = "0.8.7"
 axum-extra = { version = "0.12.1", features = ["cookie"] }
@@ -15,7 +15,7 @@ rand_core = { version = "0.6", features = ["std"] }
 serde = { workspace = true }
 serde_yaml_ng = "0.10"
 time = "0.3.44"
-tokio = { version = "1.48.0", features = ["full"] }
+tokio = { workspace = true }
 thiserror = { workspace = true }
 tower = "0.5.2"
 tower-http = { version = "0.6.8", features = ["request-id", "trace"] }
