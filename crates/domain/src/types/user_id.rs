@@ -1,58 +1,6 @@
-use std::str::FromStr;
+use crate::id_type;
 
-use uuid::Uuid;
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct UserId {
-    val: Uuid,
-}
-
-#[derive(Debug, thiserror::Error, PartialEq)]
-pub enum Error {
-    #[error("id must be a valid UUID")]
-    Malformed,
-
-    #[error("id cannot be zero UUID")]
-    ZerosOnly,
-
-    #[error("id cannot be ones only UUID")]
-    OnesOnly,
-}
-
-impl UserId {
-    pub fn new(id: Uuid) -> Result<Self, Error> {
-        if id.is_nil() {
-            return Err(Error::ZerosOnly);
-        }
-        if id.is_max() {
-            return Err(Error::OnesOnly);
-        }
-        Ok(Self { val: id })
-    }
-
-    pub fn new_random() -> Self {
-        Self::new(Uuid::now_v7()).expect("valid UUID v7")
-    }
-
-    pub fn value(&self) -> Uuid {
-        self.val
-    }
-}
-
-impl FromStr for UserId {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let id: Uuid = s.trim().parse().map_err(|_| Error::Malformed)?;
-        Self::new(id)
-    }
-}
-
-impl std::fmt::Display for UserId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.val)
-    }
-}
+id_type!(UserId);
 
 #[cfg(test)]
 mod tests {
