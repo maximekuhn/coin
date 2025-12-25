@@ -96,7 +96,7 @@ fn create_expense_err_to_api_error(err: CreateExpenseError) -> ApiError {
             detail: Some("current user is not in group".to_string()),
         },
         CreateExpenseError::ParticipantNotFound => ApiError {
-            kind: ErrorKind::NotFound,
+            kind: ErrorKind::InvalidInput,
             message: Some(
                 "at least one participant in the list does not belong to the group".to_string(),
             ),
