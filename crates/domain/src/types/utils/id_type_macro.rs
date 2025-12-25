@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! id_type {
     ($name:ident) => {
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
         pub struct $name {
             val: ::uuid::Uuid,
         }
