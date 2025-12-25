@@ -7,7 +7,7 @@ use crate::types::{
     expense_id::ExpenseId, group_id::GroupId, money::Money, user_id::UserId,
 };
 
-/// Represents a versioned snapshot of an expense.
+/// Represents a versioned snapshot of an [Expense](crate::entities::expense::Expense).
 ///
 /// Expense entries are immutable.
 /// Any modification to an expense (correction, update, etc.)

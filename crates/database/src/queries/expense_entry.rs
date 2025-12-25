@@ -2,7 +2,7 @@ use domain::{
     entities::ExpenseEntry,
     types::{
         expense_entry_id::ExpenseEntryId, expense_entry_status::ExpenseEntryStatus,
-        expense_id::ExpenseId,
+        expense_id::ExpenseId, group_id::GroupId,
     },
 };
 use sqlx::QueryBuilder;
@@ -130,6 +130,37 @@ pub async fn get_all_by_expense_id(
     "#,
     )
     .bind(expense_id.value())
+    .fetch_all(tx.as_mut())
+    .await?;
+
+    flatten_expense_entries_with_participants(rows)
+}
+
+pub async fn get_all_active_for_group_id_ordered_by_creation_date_desc(
+    tx: &mut crate::Transaction<'_>,
+    group_id: &GroupId,
+) -> Result<Vec<ExpenseEntry>, crate::Error> {
+    let rows: Vec<DbExpenseEntryWithOptionalParticipant> = sqlx::query_as(
+        r#"
+    SELECT
+        ee.id,
+        ee.expense_id,
+        ee.coin_group_id,
+        ee.payer_id,
+        ee.status,
+        ee.total,
+        ee.author_id,
+        ee.occurred_at,
+        ee.created_at,
+        eep.participant_id
+    FROM expense_entry ee
+    LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
+    WHERE ee.coin_group_id = ?
+    AND ee.status IS NULL
+    ORDER BY ee.created_at DESC
+    "#,
+    )
+    .bind(group_id.value())
     .fetch_all(tx.as_mut())
     .await?;
 

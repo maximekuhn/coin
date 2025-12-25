@@ -1,3 +1,5 @@
+use std::collections::{HashMap, HashSet};
+
 use domain::{entities::User, types::user_id::UserId};
 use email_address::EmailAddress;
 use uuid::Uuid;
@@ -98,4 +100,43 @@ pub async fn exists_by_id(
     .fetch_optional(tx.as_mut())
     .await?
     .is_some())
+}
+
+pub async fn get_all_in_ids(
+    tx: &mut crate::Transaction<'_>,
+    ids: HashSet<UserId>,
+) -> Result<HashMap<UserId, User>, crate::Error> {
+    if ids.is_empty() {
+        return Ok(HashMap::new());
+    }
+
+    let uuids: Vec<Uuid> = ids.into_iter().map(|id| id.value()).collect();
+
+    let placeholders = std::iter::repeat_n("?", uuids.len())
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    let sql = format!(
+        r#"
+        SELECT *
+        FROM user
+        WHERE id IN ({})
+        "#,
+        placeholders
+    );
+
+    let mut query = sqlx::query_as::<_, DbUser>(&sql);
+    for id in &uuids {
+        query = query.bind(id);
+    }
+
+    let rows = query.fetch_all(tx.as_mut()).await?;
+
+    let mut users = HashMap::new();
+    for row in rows {
+        let user: User = row.try_into()?;
+        users.insert(user.id, user);
+    }
+
+    Ok(users)
 }

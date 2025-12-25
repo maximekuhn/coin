@@ -17,6 +17,10 @@ impl Money {
         self.cents
     }
 
+    pub fn euros(&self) -> i64 {
+        self.cents / 100
+    }
+
     pub fn is_negative(&self) -> bool {
         self.cents < 0
     }

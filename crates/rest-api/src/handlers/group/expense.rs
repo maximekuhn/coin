@@ -1,5 +1,6 @@
-use application::commands::create_expense::{
-    CreateExpenseCommand, CreateExpenseError, IncludeParticipants,
+use application::{
+    commands::create_expense::{CreateExpenseCommand, CreateExpenseError, IncludeParticipants},
+    queries::get_expenses_for_group::{GetExpensesForGroupError, GetExpensesForGroupQuery},
 };
 use axum::{
     Json,
@@ -56,6 +57,31 @@ pub async fn create(
     }))
 }
 
+pub async fn get_all(
+    State(state): State<AppState>,
+    User(user, _, _): User,
+    Path(group_id): Path<Uuid>,
+) -> Result<Json<GetAllResponse>, ApiError> {
+    let group_id = GroupId::new(group_id)?;
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let expenses = GetExpensesForGroupQuery {
+        group_id,
+        current_user: user.id,
+    }
+    .handle(&mut tx)
+    .await
+    .map_err(get_group_expenses_err_to_api_error)?;
+
+    tx.commit().await?;
+
+    tracing::debug!(total = expenses.len(), "found expenses");
+
+    let expenses = expenses.into_iter().map(ExpenseDto::from).collect();
+    Ok(Json(GetAllResponse { expenses }))
+}
+
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateBody {
@@ -71,6 +97,54 @@ pub struct CreateBody {
 #[serde(rename_all = "camelCase")]
 pub struct CreateResponse {
     expense_id: Uuid,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetAllResponse {
+    expenses: Vec<ExpenseDto>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ExpenseDto {
+    id: Uuid,
+    payer: UserDto,
+    participants: Vec<UserDto>,
+    total_euros: i64,
+    occured_at: DateTime<Utc>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct UserDto {
+    id: Uuid,
+    name: String,
+}
+
+impl From<application::queries::get_expenses_for_group::GroupExpense> for ExpenseDto {
+    fn from(group_expense: application::queries::get_expenses_for_group::GroupExpense) -> Self {
+        Self {
+            id: group_expense.id.value(),
+            payer: group_expense.payer.into(),
+            participants: group_expense
+                .participants
+                .into_iter()
+                .map(UserDto::from)
+                .collect(),
+            total_euros: group_expense.total.euros(),
+            occured_at: group_expense.occurred_at,
+        }
+    }
+}
+
+impl From<application::queries::get_expenses_for_group::UserSummary> for UserDto {
+    fn from(user_summary: application::queries::get_expenses_for_group::UserSummary) -> Self {
+        Self {
+            id: user_summary.id.value(),
+            name: user_summary.name.value(),
+        }
+    }
 }
 
 fn create_expense_err_to_api_error(err: CreateExpenseError) -> ApiError {
@@ -103,6 +177,26 @@ fn create_expense_err_to_api_error(err: CreateExpenseError) -> ApiError {
             detail: None,
         },
         CreateExpenseError::Database(error) => ApiError {
+            kind: ErrorKind::Internal,
+            message: None,
+            detail: Some(error.to_string()),
+        },
+    }
+}
+
+fn get_group_expenses_err_to_api_error(err: GetExpensesForGroupError) -> ApiError {
+    match err {
+        GetExpensesForGroupError::GroupNotFound => ApiError {
+            kind: ErrorKind::NotFound,
+            message: Some("group not found".to_string()),
+            detail: None,
+        },
+        GetExpensesForGroupError::Forbidden => ApiError {
+            kind: ErrorKind::ActionForbidden,
+            message: None,
+            detail: Some("user is not allowed access group expenses".to_string()),
+        },
+        GetExpensesForGroupError::Database(error) => ApiError {
             kind: ErrorKind::Internal,
             message: None,
             detail: Some(error.to_string()),

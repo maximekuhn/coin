@@ -57,6 +57,10 @@ fn routes(state: AppState) -> Router {
             "/groups/{group_id}/expenses",
             post(handlers::group::expense::create),
         )
+        .route(
+            "/groups/{group_id}/expenses",
+            get(handlers::group::expense::get_all),
+        )
         .route("/hello", get(handlers::dummy::hello_user))
         .with_state(state);
 
