@@ -1,15 +1,20 @@
 use std::collections::HashSet;
 
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use domain::{
     entities::{ExpenseEntry, Group},
-    types::{expense_entry_id::ExpenseEntryId, group_id::GroupId, money::Money, user_id::UserId},
+    types::{
+        expense_entry_id::ExpenseEntryId, expense_entry_status::ExpenseEntryStatus,
+        expense_id::ExpenseId, group_id::GroupId, money::Money, user_id::UserId,
+    },
 };
 
 pub struct CreateExpenseCommand {
     pub group_id: GroupId,
     pub payer_id: UserId,
+    pub author_id: UserId,
     pub participants: IncludeParticipants,
+    pub occured_at: DateTime<Utc>,
     pub total: Money,
 }
 
@@ -26,11 +31,14 @@ pub enum CreateExpenseError {
     #[error("group not found")]
     GroupNotFound,
 
-    #[error("cannot create an expense with a negative total")]
-    NegativeTotal,
+    #[error("total must be > 0")]
+    InvalidTotal,
 
     #[error("must be group member to add an expense to a group")]
     PayerIsNotGroupMember,
+
+    #[error("author not found in group")]
+    AuthorNotInGroup,
 
     #[error("at least one participant is not found in group")]
     ParticipantNotFound,
@@ -43,17 +51,20 @@ impl CreateExpenseCommand {
     pub async fn handle(
         self,
         tx: &mut database::Transaction<'_>,
-    ) -> Result<ExpenseEntryId, CreateExpenseError> {
+    ) -> Result<ExpenseId, CreateExpenseError> {
         if self.total.is_negative() {
-            return Err(CreateExpenseError::NegativeTotal);
+            return Err(CreateExpenseError::InvalidTotal);
         }
 
         let Some(group) = database::queries::group::get_by_id(tx, &self.group_id).await? else {
             return Err(CreateExpenseError::GroupNotFound);
         };
 
-        if !(group.is_user_owner(&self.payer_id) || group.is_user_member(&self.payer_id)) {
+        if !group.contains_user(&self.payer_id) {
             return Err(CreateExpenseError::PayerIsNotGroupMember);
+        }
+        if !group.contains_user(&self.author_id) {
+            return Err(CreateExpenseError::AuthorNotInGroup);
         }
 
         let mut participants = self.get_participants(&group)?;
@@ -61,15 +72,19 @@ impl CreateExpenseCommand {
 
         let expense_entry = ExpenseEntry::new(
             ExpenseEntryId::new_random(),
+            ExpenseId::new_random(),
             self.group_id,
             self.payer_id,
             participants,
+            ExpenseEntryStatus::Active,
             self.total,
+            self.author_id,
+            self.occured_at,
             Utc::now(),
         )
         .expect("valid expense entry");
         database::queries::expense_entry::create(tx, &expense_entry).await?;
-        Ok(expense_entry.id)
+        Ok(expense_entry.expense_id)
     }
 
     fn get_participants(&self, group: &Group) -> Result<HashSet<UserId>, CreateExpenseError> {

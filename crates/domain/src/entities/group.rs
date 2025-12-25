@@ -21,4 +21,8 @@ impl Group {
     pub fn is_user_member(&self, user_id: &UserId) -> bool {
         self.members.iter().any(|member_id| member_id == user_id)
     }
+
+    pub fn contains_user(&self, user_id: &UserId) -> bool {
+        self.is_user_owner(user_id) || self.is_user_member(user_id)
+    }
 }

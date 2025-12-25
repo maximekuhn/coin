@@ -17,6 +17,8 @@ use crate::{
     state::AppState,
 };
 
+pub mod expense;
+
 pub async fn create(
     State(state): State<AppState>,
     User(user, _, _): User,

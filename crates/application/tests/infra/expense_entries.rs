@@ -1,7 +1,11 @@
 use application::commands::create_expense::{CreateExpenseCommand, IncludeParticipants};
+use chrono::{DateTime, Utc};
 use domain::{
     entities::ExpenseEntry,
-    types::{expense_entry_id::ExpenseEntryId, group_id::GroupId, money::Money, user_id::UserId},
+    types::{
+        expense_entry_id::ExpenseEntryId, expense_id::ExpenseId, group_id::GroupId, money::Money,
+        user_id::UserId,
+    },
 };
 use uuid::Uuid;
 
@@ -19,6 +23,8 @@ impl<'a> ExpenseEntriesHelper<'a> {
         group_id: Uuid,
         payer_id: Uuid,
         total_euros: i64,
+        author_id: Uuid,
+        occured_at: DateTime<Utc>,
     ) -> anyhow::Result<Uuid> {
         let mut tx = self.pool.begin().await?;
         let id = CreateExpenseCommand {
@@ -26,6 +32,8 @@ impl<'a> ExpenseEntriesHelper<'a> {
             payer_id: UserId::new(payer_id)?,
             participants: IncludeParticipants::All,
             total: Money::from_euros(total_euros),
+            author_id: UserId::new(author_id)?,
+            occured_at,
         }
         .handle(&mut tx)
         .await?;
@@ -39,6 +47,8 @@ impl<'a> ExpenseEntriesHelper<'a> {
         payer_id: Uuid,
         total_euros: i64,
         participants: Vec<Uuid>,
+        author_id: Uuid,
+        occured_at: DateTime<Utc>,
     ) -> anyhow::Result<Uuid> {
         let mut tx = self.pool.begin().await?;
         let id = CreateExpenseCommand {
@@ -51,6 +61,8 @@ impl<'a> ExpenseEntriesHelper<'a> {
                     .collect::<Result<_, _>>()?,
             },
             total: Money::from_euros(total_euros),
+            author_id: UserId::new(author_id)?,
+            occured_at,
         }
         .handle(&mut tx)
         .await?;
@@ -58,18 +70,18 @@ impl<'a> ExpenseEntriesHelper<'a> {
         Ok(id.value())
     }
 
-    pub async fn assert_entry_exists(
+    pub async fn assert_expense_has_a_single_entry(
         &mut self,
-        expense_entry_id: Uuid,
+        expense_id: Uuid,
     ) -> anyhow::Result<ExpenseEntry> {
         let mut tx = self.pool.begin().await?;
-        let expense_entry = database::queries::expense_entry::get_by_id(
+        let expense_entries = database::queries::expense_entry::get_all_by_expense_id(
             &mut tx,
-            &ExpenseEntryId::new(expense_entry_id)?,
+            &ExpenseId::new(expense_id)?,
         )
         .await?;
         tx.commit().await?;
-        assert!(expense_entry.is_some());
-        Ok(expense_entry.unwrap())
+        assert_eq!(1, expense_entries.len());
+        Ok(expense_entries.into_iter().nth(0).unwrap())
     }
 }

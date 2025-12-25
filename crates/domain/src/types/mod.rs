@@ -6,6 +6,8 @@ pub mod user_id;
 pub mod username;
 
 pub mod expense_entry_id;
+pub mod expense_entry_status;
+pub mod expense_id;
 pub mod money;
 
 mod utils;

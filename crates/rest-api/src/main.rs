@@ -53,6 +53,10 @@ fn routes(state: AppState) -> Router {
             "/groups/{group_id}/members",
             post(handlers::group::add_member),
         )
+        .route(
+            "/groups/{group_id}/expenses",
+            post(handlers::group::expense::create),
+        )
         .route("/hello", get(handlers::dummy::hello_user))
         .with_state(state);
 

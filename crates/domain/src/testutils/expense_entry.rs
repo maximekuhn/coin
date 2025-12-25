@@ -5,29 +5,45 @@ use uuid::Uuid;
 
 use crate::{
     entities::ExpenseEntry,
-    types::{expense_entry_id::ExpenseEntryId, group_id::GroupId, money::Money, user_id::UserId},
+    types::{expense_entry_status::ExpenseEntryStatus, money::Money, user_id::UserId},
 };
 
 pub struct TestExpenseEntry;
 
 impl TestExpenseEntry {
+    #[allow(clippy::too_many_arguments)]
     pub fn new_valid(
         id: impl Into<Uuid>,
+        expense_id: impl Into<Uuid>,
         group_id: impl Into<Uuid>,
-        paid_by: impl Into<Uuid>,
+        payer_id: impl Into<Uuid>,
         participants: HashSet<impl Into<Uuid>>,
+        status: ExpenseEntryStatus,
         total_euros: i64,
+        author_id: impl Into<Uuid>,
+        occurred_at: DateTime<Utc>,
         created_at: DateTime<Utc>,
     ) -> ExpenseEntry {
+        let id = id.into().to_string().parse().unwrap();
+        let expense_id = expense_id.into().to_string().parse().unwrap();
+        let group_id = group_id.into().to_string().parse().unwrap();
+        let payer_id = payer_id.into().to_string().parse().unwrap();
+        let participants = participants
+            .into_iter()
+            .map(|p| UserId::new(p.into()).unwrap())
+            .collect();
+        let total = Money::from_euros(total_euros);
+        let author_id = author_id.into().to_string().parse().unwrap();
         ExpenseEntry::new(
-            ExpenseEntryId::new(id.into()).unwrap(),
-            GroupId::new(group_id.into()).unwrap(),
-            UserId::new(paid_by.into()).unwrap(),
-            participants
-                .into_iter()
-                .map(|participant_id| UserId::new(participant_id.into()).unwrap())
-                .collect(),
-            Money::from_euros(total_euros),
+            id,
+            expense_id,
+            group_id,
+            payer_id,
+            participants,
+            status,
+            total,
+            author_id,
+            occurred_at,
             created_at,
         )
         .unwrap()
