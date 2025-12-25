@@ -43,7 +43,7 @@ pub async fn create(
         participants,
         total,
         author_id: user.id,
-        occured_at: body.occured_at,
+        occured_at: body.occurred_at,
     }
     .handle(&mut tx)
     .await
@@ -57,12 +57,13 @@ pub async fn create(
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateBody {
     /// If participants is `None`, all group members will be considered
     /// as participants for the new expense.
     participants: Option<Vec<Uuid>>,
     total_euros: u64,
-    occured_at: DateTime<Utc>,
+    occurred_at: DateTime<Utc>,
     payer_id: Uuid,
 }
 
