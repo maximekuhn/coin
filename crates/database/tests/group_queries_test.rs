@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use domain::{
     entities::Group,
     types::{group_id::GroupId, user_id::UserId},
@@ -56,7 +58,7 @@ async fn create_ok(pool: SqlitePool) {
         GroupId::new_random(),
         "Trip to Paris".parse().unwrap(),
         fixtures::users::marc().id,
-        vec![],
+        HashSet::new(),
         Utc::now(),
     );
 
@@ -77,7 +79,7 @@ async fn create_same_name_different_case_ok(pool: SqlitePool) {
         GroupId::new_random(),
         name,
         fixtures::groups::trip_to_europe_2025().owner_id,
-        vec![],
+        HashSet::new(),
         Utc::now(),
     );
 
@@ -92,7 +94,7 @@ async fn create_with_owner_and_single_member_ok(pool: SqlitePool) {
         GroupId::new_random(),
         "Trip to Paris".parse().unwrap(),
         fixtures::users::marc().id,
-        vec![fixtures::users::bill().id],
+        HashSet::from_iter(vec![fixtures::users::bill().id]),
         Utc::now(),
     );
 
@@ -107,7 +109,10 @@ async fn create_with_members_ok(pool: SqlitePool) {
         GroupId::new_random(),
         "Trip to Paris".parse().unwrap(),
         fixtures::users::marc().id,
-        vec![fixtures::users::bill().id, fixtures::users::johndoe().id],
+        HashSet::from_iter(vec![
+            fixtures::users::bill().id,
+            fixtures::users::johndoe().id,
+        ]),
         Utc::now(),
     );
 
@@ -122,7 +127,10 @@ async fn create_with_members_err_unique_violation_same_name_for_owner(pool: Sqli
         GroupId::new_random(),
         fixtures::groups::trip_to_europe_2025().name,
         fixtures::groups::trip_to_europe_2025().owner_id,
-        vec![fixtures::users::bill().id, fixtures::users::johndoe().id],
+        HashSet::from_iter(vec![
+            fixtures::users::bill().id,
+            fixtures::users::johndoe().id,
+        ]),
         Utc::now(),
     );
 
@@ -176,7 +184,7 @@ async fn create_err_foreign_key_owner_not_existing(pool: SqlitePool) {
         GroupId::new_random(),
         "New group".parse().unwrap(),
         UserId::new_random(),
-        vec![],
+        HashSet::new(),
         Utc::now(),
     );
 
@@ -207,7 +215,7 @@ async fn create_err_foreign_key_member_not_existing(pool: SqlitePool) {
         GroupId::new_random(),
         "New group".parse().unwrap(),
         fixtures::users::johndoe().id,
-        vec![UserId::new_random()],
+        HashSet::from_iter(vec![UserId::new_random()]),
         Utc::now(),
     );
 

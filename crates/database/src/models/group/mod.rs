@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use domain::{
     entities::Group,
     types::{group_id::GroupId, user_id::UserId},
@@ -47,7 +49,13 @@ impl TryInto<Group> for DbGroupWithMembers {
                 msg: err.to_string(),
             })?;
 
-        let mut group = Group::new(id, groupname, owner_id, vec![], self.group.created_at);
+        let mut group = Group::new(
+            id,
+            groupname,
+            owner_id,
+            HashSet::new(),
+            self.group.created_at,
+        );
 
         let members: Vec<UserId> = self
             .members

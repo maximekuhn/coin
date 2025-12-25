@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use chrono::{DateTime, Utc};
 
 use crate::types::{group_id::GroupId, groupname::Groupname, user_id::UserId};
@@ -7,7 +9,7 @@ pub struct Group {
     pub id: GroupId,
     pub name: Groupname,
     pub owner_id: UserId,
-    pub members: Vec<UserId>,
+    pub members: HashSet<UserId>,
     pub created_at: DateTime<Utc>,
 }
 

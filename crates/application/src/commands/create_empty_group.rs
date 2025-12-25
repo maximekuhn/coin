@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use chrono::Utc;
 use domain::{
     entities::Group,
@@ -37,7 +39,13 @@ impl CreateEmptyGroupCommand {
         }
 
         let id = GroupId::new_random();
-        let group = Group::new(id, self.groupname, self.owner_id, vec![], Utc::now());
+        let group = Group::new(
+            id,
+            self.groupname,
+            self.owner_id,
+            HashSet::new(),
+            Utc::now(),
+        );
         database::queries::group::create(tx, &group).await?;
 
         Ok(id)
