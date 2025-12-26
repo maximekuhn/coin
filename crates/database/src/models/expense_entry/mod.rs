@@ -7,7 +7,6 @@ use domain::{
         expense_id::ExpenseId, group_id::GroupId, money::Money, user_id::UserId,
     },
 };
-use itertools::Itertools;
 use sqlx::types::chrono::{DateTime, Utc};
 use uuid::Uuid;
 
@@ -111,68 +110,97 @@ pub struct DbExpenseEntryWithOptionalParticipant {
 pub fn flatten_expense_entries_with_participants(
     rows: Vec<DbExpenseEntryWithOptionalParticipant>,
 ) -> Result<Vec<ExpenseEntry>, crate::Error> {
-    let groupped_by_expense_id = rows.into_iter().into_group_map_by(|row| row.expense_id);
     let mut out = Vec::new();
-    for entries in groupped_by_expense_id.into_values() {
-        let first = entries.first().expect("no empty vector");
+    let mut current: Option<(DbExpenseEntryWithOptionalParticipant, HashSet<UserId>)> = None;
 
-        let id = ExpenseEntryId::new(first.id).map_err(|err| crate::Error::CorruptedData {
-            msg: format!("corrupted id: {}", err),
-        })?;
-        let expense_id =
-            ExpenseId::new(first.expense_id).map_err(|err| crate::Error::CorruptedData {
-                msg: format!("corrupted expense_id: {}", err),
-            })?;
-        let group_id = GroupId::new(first.group_id).map_err(|err| crate::Error::CorruptedData {
-            msg: format!("corrupted group_id: {}", err),
-        })?;
-        let payer_id = UserId::new(first.payer_id).map_err(|err| crate::Error::CorruptedData {
-            msg: format!("corrupted payer_id: {}", err),
-        })?;
-        let status = match first.status {
-            Some(overwritten_by) => ExpenseEntryStatus::Inactive {
-                overwritten_by: ExpenseEntryId::new(overwritten_by).map_err(|err| {
-                    crate::Error::CorruptedData {
-                        msg: format!("corrupted status: {}", err),
-                    }
-                })?,
-            },
-            None => ExpenseEntryStatus::Active,
-        };
-        let total = Money::from_cents(first.total);
-        let author_id =
-            UserId::new(first.author_id).map_err(|err| crate::Error::CorruptedData {
-                msg: format!("corrupted author_id: {}", err),
-            })?;
+    for row in rows {
+        match &mut current {
+            Some((first, participants)) if first.id == row.id => {
+                if let Some(participant_id) = row.participant_id {
+                    participants.insert(UserId::new(participant_id).map_err(|err| {
+                        crate::Error::CorruptedData {
+                            msg: format!("corrupted participant: {}", err),
+                        }
+                    })?);
+                }
+            }
+            _ => {
+                if let Some((first, participants)) = current.take() {
+                    out.push(build_expense_entry(first, participants)?);
+                }
 
-        let mut participants = HashSet::new();
-        for entry in &entries {
-            if let Some(participant) = entry.participant_id {
-                participants.insert(UserId::new(participant).map_err(|err| {
-                    crate::Error::CorruptedData {
-                        msg: format!("corrupted participant: {}", err),
-                    }
-                })?);
+                let mut participants = HashSet::new();
+                if let Some(participant_id) = row.participant_id {
+                    participants.insert(UserId::new(participant_id).map_err(|err| {
+                        crate::Error::CorruptedData {
+                            msg: format!("corrupted participant: {}", err),
+                        }
+                    })?);
+                }
+
+                current = Some((row, participants));
             }
         }
-
-        out.push(
-            ExpenseEntry::new(
-                id,
-                expense_id,
-                group_id,
-                payer_id,
-                participants,
-                status,
-                total,
-                author_id,
-                first.occurred_at,
-                first.created_at,
-            )
-            .map_err(|err| crate::Error::CorruptedData {
-                msg: format!("corrupted expense entry: {}", err),
-            })?,
-        );
     }
+
+    if let Some((first, participants)) = current {
+        out.push(build_expense_entry(first, participants)?);
+    }
+
     Ok(out)
+}
+
+fn build_expense_entry(
+    first: DbExpenseEntryWithOptionalParticipant,
+    participants: HashSet<UserId>,
+) -> Result<ExpenseEntry, crate::Error> {
+    let id = ExpenseEntryId::new(first.id).map_err(|err| crate::Error::CorruptedData {
+        msg: format!("corrupted id: {}", err),
+    })?;
+
+    let expense_id =
+        ExpenseId::new(first.expense_id).map_err(|err| crate::Error::CorruptedData {
+            msg: format!("corrupted expense_id: {}", err),
+        })?;
+
+    let group_id = GroupId::new(first.group_id).map_err(|err| crate::Error::CorruptedData {
+        msg: format!("corrupted group_id: {}", err),
+    })?;
+
+    let payer_id = UserId::new(first.payer_id).map_err(|err| crate::Error::CorruptedData {
+        msg: format!("corrupted payer_id: {}", err),
+    })?;
+
+    let author_id = UserId::new(first.author_id).map_err(|err| crate::Error::CorruptedData {
+        msg: format!("corrupted author_id: {}", err),
+    })?;
+
+    let status = match first.status {
+        Some(overwritten_by) => ExpenseEntryStatus::Inactive {
+            overwritten_by: ExpenseEntryId::new(overwritten_by).map_err(|err| {
+                crate::Error::CorruptedData {
+                    msg: format!("corrupted status: {}", err),
+                }
+            })?,
+        },
+        None => ExpenseEntryStatus::Active,
+    };
+
+    let total = Money::from_cents(first.total);
+
+    ExpenseEntry::new(
+        id,
+        expense_id,
+        group_id,
+        payer_id,
+        participants,
+        status,
+        total,
+        author_id,
+        first.occurred_at,
+        first.created_at,
+    )
+    .map_err(|err| crate::Error::CorruptedData {
+        msg: format!("corrupted expense entry: {}", err),
+    })
 }

@@ -1,10 +1,13 @@
+use std::num::NonZeroUsize;
+
 use application::{
     commands::create_expense::{CreateExpenseCommand, CreateExpenseError, IncludeParticipants},
+    pagination::Pagination,
     queries::get_expenses_for_group::{GetExpensesForGroupError, GetExpensesForGroupQuery},
 };
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, Query, State},
 };
 use chrono::{DateTime, Utc};
 use domain::types::{group_id::GroupId, money::Money, user_id::UserId};
@@ -60,15 +63,18 @@ pub async fn create(
 pub async fn get_all(
     State(state): State<AppState>,
     User(user, _, _): User,
+    Query(query): Query<GetAllQuery>,
     Path(group_id): Path<Uuid>,
 ) -> Result<Json<GetAllResponse>, ApiError> {
     let group_id = GroupId::new(group_id)?;
+    let pagination = Pagination::new_from_optional(query.page, query.page_size)?;
 
     let mut tx = state.db_pool.begin().await?;
 
-    let expenses = GetExpensesForGroupQuery {
+    let output = GetExpensesForGroupQuery {
         group_id,
         current_user: user.id,
+        pagination,
     }
     .handle(&mut tx)
     .await
@@ -76,10 +82,18 @@ pub async fn get_all(
 
     tx.commit().await?;
 
-    tracing::debug!(total = expenses.len(), "found expenses");
+    tracing::debug!(
+        total = output.total_items,
+        returned = output.expenses.len(),
+        "query output summary"
+    );
 
-    let expenses = expenses.into_iter().map(ExpenseDto::from).collect();
-    Ok(Json(GetAllResponse { expenses }))
+    let expenses = output.expenses.into_iter().map(ExpenseDto::from).collect();
+    Ok(Json(GetAllResponse {
+        data: expenses,
+        request_pagination: pagination.into(),
+        total_items: output.total_items,
+    }))
 }
 
 #[derive(Deserialize)]
@@ -99,10 +113,26 @@ pub struct CreateResponse {
     expense_id: Uuid,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetAllQuery {
+    pub page: Option<NonZeroUsize>,
+    pub page_size: Option<NonZeroUsize>,
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetAllResponse {
-    expenses: Vec<ExpenseDto>,
+    data: Vec<ExpenseDto>,
+    request_pagination: PaginationDto,
+    total_items: usize,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct PaginationDto {
+    page: usize,
+    page_size: usize,
 }
 
 #[derive(Serialize)]
@@ -112,7 +142,7 @@ struct ExpenseDto {
     payer: UserDto,
     participants: Vec<UserDto>,
     total_euros: i64,
-    occured_at: DateTime<Utc>,
+    occurred_at: DateTime<Utc>,
 }
 
 #[derive(Serialize)]
@@ -133,7 +163,7 @@ impl From<application::queries::get_expenses_for_group::GroupExpense> for Expens
                 .map(UserDto::from)
                 .collect(),
             total_euros: group_expense.total.euros(),
-            occured_at: group_expense.occurred_at,
+            occurred_at: group_expense.occurred_at,
         }
     }
 }
@@ -143,6 +173,15 @@ impl From<application::queries::get_expenses_for_group::UserSummary> for UserDto
         Self {
             id: user_summary.id.value(),
             name: user_summary.name.value(),
+        }
+    }
+}
+
+impl From<Pagination> for PaginationDto {
+    fn from(p: Pagination) -> Self {
+        Self {
+            page: p.page().get(),
+            page_size: p.page_size().get(),
         }
     }
 }

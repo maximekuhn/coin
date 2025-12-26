@@ -166,3 +166,13 @@ impl From<domain::types::user_id::Error> for ApiError {
         }
     }
 }
+
+impl From<application::pagination::Error> for ApiError {
+    fn from(err: application::pagination::Error) -> Self {
+        Self {
+            kind: ErrorKind::InvalidInput,
+            message: Some(err.to_string()),
+            detail: None,
+        }
+    }
+}

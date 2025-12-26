@@ -8,9 +8,12 @@ use domain::{
 use sqlx::QueryBuilder;
 use uuid::Uuid;
 
-use crate::models::expense_entry::{
-    DbExpenseEntry, DbExpenseEntryWithOptionalParticipant, DbExpenseEntryWithParticipants,
-    flatten_expense_entries_with_participants,
+use crate::{
+    DbPagination,
+    models::expense_entry::{
+        DbExpenseEntry, DbExpenseEntryWithOptionalParticipant, DbExpenseEntryWithParticipants,
+        flatten_expense_entries_with_participants,
+    },
 };
 
 pub async fn create(
@@ -136,33 +139,70 @@ pub async fn get_all_by_expense_id(
     flatten_expense_entries_with_participants(rows)
 }
 
-pub async fn get_all_active_for_group_id_ordered_by_creation_date_desc(
+/// Returns all active expense entries associated to the provided `group_id`.
+///
+/// # Arguments
+/// - `tx`
+/// - `group_id`
+/// - `page` pagination to apply to active expense entries
+///
+/// # Return
+/// - a list of expense entires, sorted by (system) creation date and entry id
+pub async fn get_all_active_for_group(
     tx: &mut crate::Transaction<'_>,
     group_id: &GroupId,
+    page: DbPagination,
 ) -> Result<Vec<ExpenseEntry>, crate::Error> {
     let rows: Vec<DbExpenseEntryWithOptionalParticipant> = sqlx::query_as(
         r#"
-    SELECT
-        ee.id,
-        ee.expense_id,
-        ee.coin_group_id,
-        ee.payer_id,
-        ee.status,
-        ee.total,
-        ee.author_id,
-        ee.occurred_at,
-        ee.created_at,
-        eep.participant_id
-    FROM expense_entry ee
-    LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
-    WHERE ee.coin_group_id = ?
-    AND ee.status IS NULL
-    ORDER BY ee.created_at DESC
-    "#,
+        WITH paged_expenses AS (
+            SELECT id
+            FROM expense_entry
+            WHERE coin_group_id = ?
+            AND status IS NULL
+            ORDER BY created_at DESC, id
+            LIMIT ? OFFSET ?
+        )
+        SELECT
+            ee.id,
+            ee.expense_id,
+            ee.coin_group_id,
+            ee.payer_id,
+            ee.status,
+            ee.total,
+            ee.author_id,
+            ee.occurred_at,
+            ee.created_at,
+            eep.participant_id
+        FROM expense_entry ee
+        JOIN paged_expenses pe ON pe.id = ee.id
+        LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
+        ORDER BY ee.created_at DESC, ee.id
+        "#,
     )
     .bind(group_id.value())
+    .bind(page.limit as i64)
+    .bind(page.offset as i64)
     .fetch_all(tx.as_mut())
     .await?;
 
     flatten_expense_entries_with_participants(rows)
+}
+
+pub async fn count_all_active_for_group(
+    tx: &mut crate::Transaction<'_>,
+    group_id: &GroupId,
+) -> Result<u64, crate::Error> {
+    let count: i64 = sqlx::query_scalar(
+        r#"
+        SELECT COUNT(*)
+        FROM expense_entry ee
+        WHERE ee.coin_group_id = ?
+          AND ee.status IS NULL
+        "#,
+    )
+    .bind(group_id.value())
+    .fetch_one(tx.as_mut())
+    .await?;
+    Ok(count as u64)
 }

@@ -41,6 +41,7 @@ dependencies = [
  "database",
  "domain",
  "email_address",
+ "rstest",
  "thiserror",
  "tokio",
  "uuid",

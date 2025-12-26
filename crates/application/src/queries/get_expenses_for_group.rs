@@ -8,9 +8,12 @@ use domain::{
     },
 };
 
+use crate::pagination::Pagination;
+
 pub struct GetExpensesForGroupQuery {
     pub group_id: GroupId,
     pub current_user: UserId,
+    pub pagination: Pagination,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -29,7 +32,7 @@ impl GetExpensesForGroupQuery {
     pub async fn handle(
         self,
         tx: &mut database::Transaction<'_>,
-    ) -> Result<Vec<GroupExpense>, GetExpensesForGroupError> {
+    ) -> Result<Output, GetExpensesForGroupError> {
         let Some(group) = database::queries::group::get_by_id(tx, &self.group_id).await? else {
             return Err(GetExpensesForGroupError::GroupNotFound);
         };
@@ -38,12 +41,24 @@ impl GetExpensesForGroupQuery {
             return Err(GetExpensesForGroupError::Forbidden);
         }
 
-        let expense_entries = database::queries::expense_entry::get_all_active_for_group_id_ordered_by_creation_date_desc(tx, &self.group_id).await?;
+        let expense_entries = database::queries::expense_entry::get_all_active_for_group(
+            tx,
+            &self.group_id,
+            self.pagination.into(),
+        )
+        .await?;
+
+        let total_expense_entries =
+            database::queries::expense_entry::count_all_active_for_group(tx, &self.group_id)
+                .await?;
 
         let user_ids = get_user_ids(&expense_entries);
         let users = database::queries::user::get_all_in_ids(tx, user_ids).await?;
 
-        Ok(build_group_expenses(expense_entries, users))
+        Ok(Output {
+            expenses: build_group_expenses(expense_entries, users),
+            total_items: total_expense_entries as usize,
+        })
     }
 }
 
@@ -98,6 +113,11 @@ fn get_participants(
         });
     }
     participants
+}
+
+pub struct Output {
+    pub expenses: Vec<GroupExpense>,
+    pub total_items: usize,
 }
 
 pub struct GroupExpense {
