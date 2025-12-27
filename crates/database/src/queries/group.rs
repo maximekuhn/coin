@@ -5,7 +5,12 @@ use domain::{
 use sqlx::QueryBuilder;
 use uuid::Uuid;
 
-use crate::models::group::{DbGroup, DbGroupMember, DbGroupWithMembers};
+use crate::{
+    DbPagination,
+    models::group::{
+        DbGroup, DbGroupMember, DbGroupWithMember, DbGroupWithMembers, flatten_group_with_member,
+    },
+};
 
 pub async fn exists_by_name_for_owner(
     tx: &mut crate::Transaction<'_>,
@@ -115,4 +120,88 @@ pub async fn add_member(
     .execute(tx.as_mut())
     .await?;
     Ok(())
+}
+
+/// Returns all group that contains the provided `user_id` as owner or member.
+///
+/// # Arguments
+/// - `tx`
+/// - `user_id`
+/// - `page` pagination to apply to groups
+///
+/// # Return
+/// - a list of groups, sorted by creation date (DESC) and id
+pub async fn get_all_for_user(
+    tx: &mut crate::Transaction<'_>,
+    user_id: &UserId,
+    pagination: DbPagination,
+) -> Result<Vec<Group>, crate::Error> {
+    let group_ids: Vec<(Uuid,)> = sqlx::query_as(
+        r#"
+    SELECT DISTINCT cg.id
+    FROM coin_group cg
+    LEFT JOIN coin_group_member cgm ON cgm.coin_group_id = cg.id
+    WHERE cg.owner_id = ?
+    OR cgm.member_id = ?
+    ORDER BY cg.created_at DESC, cg.id
+    LIMIT ? OFFSET ?
+    "#,
+    )
+    .bind(user_id.value())
+    .bind(user_id.value())
+    .bind(pagination.limit as i64)
+    .bind(pagination.offset as i64)
+    .fetch_all(tx.as_mut())
+    .await?;
+
+    if group_ids.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let group_ids: Vec<Uuid> = group_ids.into_iter().map(|g| g.0).collect();
+    let placeholders = std::iter::repeat_n("?", group_ids.len())
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    let sql = format!(
+        r#"
+    SELECT
+        cg.id,
+        cg.name,
+        cg.owner_id,
+        cg.created_at,
+        cgm.member_id
+    FROM coin_group cg
+    LEFT JOIN coin_group_member cgm ON cgm.coin_group_id = cg.id
+    WHERE cg.id IN ({})
+    "#,
+        placeholders
+    );
+
+    let mut query = sqlx::query_as::<_, DbGroupWithMember>(&sql);
+    for id in &group_ids {
+        query = query.bind(id);
+    }
+    let rows = query.fetch_all(tx.as_mut()).await?;
+    flatten_group_with_member(rows)
+}
+
+pub async fn count_all_for_user(
+    tx: &mut crate::Transaction<'_>,
+    user_id: &UserId,
+) -> Result<u64, crate::Error> {
+    let count: i64 = sqlx::query_scalar(
+        r#"
+    SELECT COUNT(DISTINCT g.id)
+    FROM coin_group g
+    LEFT JOIN coin_group_member gm ON gm.coin_group_id = g.id
+    WHERE g.owner_id = ?
+    OR gm.member_id = ?
+    "#,
+    )
+    .bind(user_id.value())
+    .bind(user_id.value())
+    .fetch_one(tx.as_mut())
+    .await?;
+    Ok(count as u64)
 }
