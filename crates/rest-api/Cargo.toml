@@ -18,7 +18,7 @@ time = "0.3.44"
 tokio = { workspace = true }
 thiserror = { workspace = true }
 tower = "0.5.2"
-tower-http = { version = "0.6.8", features = ["request-id", "trace"] }
+tower-http = { version = "0.6.8", features = ["cors", "request-id", "trace"] }
 tracing = { workspace = true }
 tracing-subscriber = { version = "0.3.22", features = ["json", "env-filter"] }
 uuid = { workspace = true }

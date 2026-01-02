@@ -5,6 +5,7 @@ use axum::{
     routing::{get, post},
 };
 use tower::ServiceBuilder;
+use tower_http::cors::CorsLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::state::AppState;
@@ -36,7 +37,8 @@ async fn main() -> anyhow::Result<()> {
     let db_pool = database::setup::setup_database(&config.db_file).await?;
     let app_state = AppState { db_pool, config };
 
-    let router = routes(app_state);
+    // TODO: more strict CORS layer (can be configured)
+    let router = routes(app_state).layer(CorsLayer::very_permissive());
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8757").await.unwrap();
     axum::serve(listener, router).await.unwrap();
 
