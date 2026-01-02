@@ -2,11 +2,28 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
-      <trans-unit id="5468757275907225559" datatype="html">
-        <source>Youhouu! L'application fonctionne. 🎉</source>
+      <trans-unit id="2454050363478003966" datatype="html">
+        <source>Login</source>
+        <target>Connexion</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/app.html</context>
-          <context context-type="linenumber">234,235</context>
+          <context context-type="sourcefile">src/app/layout/navbar/navbar.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2456019682161622811" datatype="html">
+        <source>Welcome to coin</source>
+        <target>Bienvenue !</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7891025130714070614" datatype="html">
+        <source>Login to your account to start sharing expenses !</source>
+        <target>Connecte toi pour commencer à partager tes dépenses.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
+          <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
     </body>
