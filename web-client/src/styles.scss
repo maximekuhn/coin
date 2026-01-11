@@ -37,3 +37,10 @@ body {
 }
 
 /* You can add global styles to this file, and also import other style files */
+
+.snackbar-error {
+  font-size: 32px;
+  @include mat.snack-bar-overrides((button-color: black,
+      container-color: var(--mat-sys-error-container),
+      supporting-text-color: black));
+}

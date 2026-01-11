@@ -1,0 +1,35 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <h2 i18n>Login to your account</h2>
+  <mat-form-field>
+    <mat-label i18n>Enter your email</mat-label>
+    <input
+      matInput
+      type="email"
+      placeholder="pat@example.com"
+      formControlName="email"
+      required
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label i18n>Password</mat-label>
+    <input
+      matInput
+      [type]="hidePassword() ? 'password' : 'text'"
+      placeholder="********"
+      formControlName="password"
+      required
+    />
+    <button
+      matIconButton
+      matSuffix
+      type="button"
+      (click)="toggleHidePassword($event)"
+    >
+      <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+  </mat-form-field>
+  <div class="bottom">
+    <p>No account ? <a routerLink="#TODO">Register</a></p>
+    <button matButton="filled" type="submit" [disabled]="!canSubmit()" i18n>Login</button>
+  </div>
+</form>

@@ -2,9 +2,49 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="1019650369270883436" datatype="html">
+        <source>Bad credentials. Please check your email and/or password and try again.</source>
+        <target>Addresse email et/ou mot de passe invalide(s).</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/auth.i18n.ts</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3275385701539864219" datatype="html">
+        <source>Unknown authentication error.</source>
+        <target>L'authentification a échouée</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/auth.i18n.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1274686598843595771" datatype="html">
+        <source>Login to your account</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="203827529942340818" datatype="html">
+        <source>Enter your email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1431416938026210429" datatype="html">
+        <source>Password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2454050363478003966" datatype="html">
         <source>Login</source>
-        <target>Connexion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/navbar/navbar.html</context>
           <context context-type="linenumber">6,7</context>
@@ -12,7 +52,6 @@
       </trans-unit>
       <trans-unit id="2456019682161622811" datatype="html">
         <source>Welcome to coin</source>
-        <target>Bienvenue !</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
           <context context-type="linenumber">3,4</context>
@@ -20,7 +59,6 @@
       </trans-unit>
       <trans-unit id="7891025130714070614" datatype="html">
         <source>Login to your account to start sharing expenses !</source>
-        <target>Connecte toi pour commencer à partager tes dépenses.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
           <context context-type="linenumber">4,5</context>
