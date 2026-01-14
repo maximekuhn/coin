@@ -21,6 +21,13 @@ impl Entry {
     pub fn oldest_session(&self) -> Option<&Session> {
         self.sessions.iter().min_by_key(|s| s.expires_at)
     }
+
+    pub fn count_valid_session(&self, now: DateTime<Utc>) -> u8 {
+        self.sessions
+            .iter()
+            .filter(|session| session.is_valid(now))
+            .count() as u8
+    }
 }
 
 impl Session {

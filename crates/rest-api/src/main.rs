@@ -50,6 +50,7 @@ fn routes(state: AppState) -> Router {
         .route("/auth/register", post(handlers::auth::register))
         .route("/auth/login", post(handlers::auth::login))
         .route("/auth/logout", post(handlers::auth::logout))
+        .route("/auth/session-info", post(handlers::auth::session_info))
         .route("/groups", post(handlers::group::create))
         .route("/groups", get(handlers::group::get_all))
         .route(

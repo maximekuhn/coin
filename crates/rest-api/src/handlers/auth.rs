@@ -4,6 +4,7 @@ use application::{
 };
 use axum::{Json, extract::State};
 use axum_extra::extract::CookieJar;
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -100,6 +101,16 @@ pub async fn logout(
     Ok(cookie::remove_cookie(jar))
 }
 
+pub async fn session_info(User(user, entry, _): User) -> Json<SessionInfoResponse> {
+    Json(SessionInfoResponse {
+        user: UserInfo {
+            id: user.id.value(),
+            name: user.name.value(),
+        },
+        active_sessions_count: entry.count_valid_session(Utc::now()),
+    })
+}
+
 #[derive(Deserialize)]
 pub struct RegisterBody {
     username: String,
@@ -117,6 +128,19 @@ pub struct RegisterResponse {
 pub struct LoginBody {
     email: String,
     password: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SessionInfoResponse {
+    user: UserInfo,
+    active_sessions_count: u8,
+}
+
+#[derive(Serialize)]
+struct UserInfo {
+    id: Uuid,
+    name: String,
 }
 
 fn create_user_err_to_api_error(err: CreateUserError) -> ApiError {
