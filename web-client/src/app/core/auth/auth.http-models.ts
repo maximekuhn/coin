@@ -1,4 +1,4 @@
-import { User } from "./auth.models";
+import { User } from './auth.models';
 
 export interface BackendSessionInfo {
   user: {
@@ -11,6 +11,6 @@ export interface BackendSessionInfo {
 export function backendSessionInfoToUser(bsi: BackendSessionInfo): User {
   return {
     id: bsi.user.id,
-    name: bsi.user.name
+    name: bsi.user.name,
   };
 }

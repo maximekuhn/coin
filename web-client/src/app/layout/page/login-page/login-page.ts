@@ -7,6 +7,4 @@ import { LoginForm } from '../../../core/auth/login-form/login-form';
   templateUrl: './login-page.html',
   styleUrl: './login-page.scss',
 })
-export class LoginPage {
-
-}
+export class LoginPage {}

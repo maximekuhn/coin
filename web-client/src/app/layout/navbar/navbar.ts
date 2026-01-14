@@ -19,22 +19,21 @@ export class Navbar {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  readonly isLoading = computed(
-    () => this.authService.authState().status === AuthStatus.Unknown
-  );
+  readonly isLoading = computed(() => this.authService.authState().status === AuthStatus.Unknown);
 
-  readonly username = computed(
-    () => this.authService.user()?.name ?? ""
-  );
+  readonly username = computed(() => this.authService.user()?.name ?? '');
 
   logout() {
-    this.authService.logout().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.router.navigate(["/login"]);
-      },
-      error: () => {
-        this.router.navigate(["/error"]);
-      }
-    });
+    this.authService
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: () => {
+          this.router.navigate(['/error']);
+        },
+      });
   }
 }

@@ -4,11 +4,11 @@ import { HomePage } from './layout/page/home-page/home-page';
 
 export const routes: Routes = [
   {
-    path: "",
-    component: HomePage
+    path: '',
+    component: HomePage,
   },
   {
-    path: "login",
-    component: LoginPage
-  }
+    path: 'login',
+    component: LoginPage,
+  },
 ];

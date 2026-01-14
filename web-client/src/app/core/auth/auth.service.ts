@@ -12,7 +12,7 @@ import { AuthState, AuthStatus, User } from './auth.models';
 export class AuthService {
   private http = inject(HttpClient);
 
-  private _authState = signal<AuthState>(({ status: AuthStatus.Unknown }));
+  private _authState = signal<AuthState>({ status: AuthStatus.Unknown });
   readonly authState = this._authState.asReadonly();
 
   readonly user = computed<User | null>(() => {
@@ -20,28 +20,28 @@ export class AuthService {
     return state.status === AuthStatus.Authenticated ? state.user : null;
   });
 
-
   login(email: string, password: string): Observable<User> {
     return this.http.post<void>(`${environment.API_URL}/api/auth/login`, { email, password }).pipe(
       switchMap(() => this.fetchSession()),
-      catchError((err: HttpErrorResponse) => throwError(() => mapToAuthError(err)))
+      catchError((err: HttpErrorResponse) => throwError(() => mapToAuthError(err))),
     );
   }
 
   fetchSession(): Observable<User> {
-    return this.http.post<BackendSessionInfo>(`${environment.API_URL}/api/auth/session-info`, {}).pipe(
-      map((res: BackendSessionInfo) => backendSessionInfoToUser(res)),
-      tap((user: User) => {
-        this._authState.set({ status: AuthStatus.Authenticated, user });
-      }),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status === 401) {
-          this._authState.set({ status: AuthStatus.Guest });
-        }
-        return throwError(() => mapToAuthError(err));
-      }
-      )
-    );
+    return this.http
+      .post<BackendSessionInfo>(`${environment.API_URL}/api/auth/session-info`, {})
+      .pipe(
+        map((res: BackendSessionInfo) => backendSessionInfoToUser(res)),
+        tap((user: User) => {
+          this._authState.set({ status: AuthStatus.Authenticated, user });
+        }),
+        catchError((err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            this._authState.set({ status: AuthStatus.Guest });
+          }
+          return throwError(() => mapToAuthError(err));
+        }),
+      );
   }
 
   logout(): Observable<void> {
@@ -52,7 +52,7 @@ export class AuthService {
       catchError((err: HttpErrorResponse) => {
         this._authState.set({ status: AuthStatus.Guest });
         return throwError(() => mapToAuthError(err));
-      })
+      }),
     );
   }
 }

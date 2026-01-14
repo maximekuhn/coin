@@ -1,4 +1,9 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -15,15 +20,17 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([withCredentialsInterceptor])),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
-      authService.fetchSession().subscribe(
-        {
-          error: (err: AuthError) => {
-            if (err.kind == AuthErrorKind.Unknown && authService.authState().status === AuthStatus.Guest) {
-              return;
-            }
-            console.error("failed to initialize app: could not retrive session");
+      authService.fetchSession().subscribe({
+        error: (err: AuthError) => {
+          if (
+            err.kind == AuthErrorKind.Unknown &&
+            authService.authState().status === AuthStatus.Guest
+          ) {
+            return;
           }
-        });
-    })
-  ]
+          console.error('failed to initialize app: could not retrive session');
+        },
+      });
+    }),
+  ],
 };

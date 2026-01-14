@@ -14,7 +14,17 @@ import { SnackbarDuration, SnackbarType } from '../../../shared/ui/snackbar/snac
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatFormField, MatLabel, MatButton, RouterLink, MatIcon, MatIconButton],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatFormField,
+    MatLabel,
+    MatButton,
+    RouterLink,
+    MatIcon,
+    MatIconButton,
+  ],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
 })
@@ -28,11 +38,8 @@ export class LoginForm implements OnDestroy {
   hidePassword = signal(true);
 
   loginForm = new FormGroup({
-    email: new FormControl("", [Validators.email]),
-    password: new FormControl("", [
-      Validators.minLength(1),
-      Validators.maxLength(128),
-    ]),
+    email: new FormControl('', [Validators.email]),
+    password: new FormControl('', [Validators.minLength(1), Validators.maxLength(128)]),
   });
 
   ngOnDestroy(): void {
@@ -45,16 +52,17 @@ export class LoginForm implements OnDestroy {
       return;
     }
     this.subscriptions.add(
-      this.authService.login(this.loginForm.value.email!, this.loginForm.value.password!).subscribe(
-        {
+      this.authService
+        .login(this.loginForm.value.email!, this.loginForm.value.password!)
+        .subscribe({
           next: () => {
-            this.router.navigate(["/"]);
+            this.router.navigate(['/']);
           },
           error: (err: AuthError) => {
             this.openErrorSnackbar(err);
-          }
-        }
-      ));
+          },
+        }),
+    );
   }
 
   canSubmit() {
@@ -67,6 +75,12 @@ export class LoginForm implements OnDestroy {
   }
 
   private openErrorSnackbar(err: AuthError) {
-    this.snackbarService.open(SnackbarType.Error, SnackbarDuration.Short, translateAuthError(err), $localize`Dismiss`, "top");
+    this.snackbarService.open(
+      SnackbarType.Error,
+      SnackbarDuration.Short,
+      translateAuthError(err),
+      $localize`Dismiss`,
+      'top',
+    );
   }
 }

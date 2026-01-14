@@ -9,7 +9,13 @@ import { getSnackbarDurationMs, getSnackbarPanelClass } from './snackbar.constan
 export class SnackbarService {
   private snackBar = inject(MatSnackBar);
 
-  open(type: SnackbarType, duration: SnackbarDuration, message: string, action: string, position: MatSnackBarVerticalPosition = "bottom") {
+  open(
+    type: SnackbarType,
+    duration: SnackbarDuration,
+    message: string,
+    action: string,
+    position: MatSnackBarVerticalPosition = 'bottom',
+  ) {
     this.snackBar.open(message, action, {
       duration: getSnackbarDurationMs(duration) ?? undefined,
       panelClass: getSnackbarPanelClass(type),

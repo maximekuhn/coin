@@ -4,13 +4,12 @@ export interface User {
 }
 
 export enum AuthStatus {
-  Unknown = "unknown",
-  Guest = "guest",
-  Authenticated = "authenticated",
+  Unknown = 'unknown',
+  Guest = 'guest',
+  Authenticated = 'authenticated',
 }
 
 export type AuthState =
   | { status: AuthStatus.Unknown }
   | { status: AuthStatus.Guest }
-  | { status: AuthStatus.Authenticated, user: User };
-
+  | { status: AuthStatus.Authenticated; user: User };
