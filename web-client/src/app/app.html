@@ -1,2 +1,10 @@
 <app-navbar />
-<router-outlet />
+
+@if (isLoading()) {
+  <div class="waiting-app-init">
+    <mat-spinner />
+    <p i18n>Waiting for application to initialize...</p>
+  </div>
+} @else {
+  <router-outlet />
+}

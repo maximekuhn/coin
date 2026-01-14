@@ -3,5 +3,23 @@
 
   <span class="spacer"></span>
 
-  <a mat-raised-button routerLink="/login" i18n>Login</a>
+  @if (!isLoading()) {
+    @if (username() !== "") {
+      <button matButton [matMenuTriggerFor]="menu" class="user-menu">{{ username() }}</button>
+      <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>account_circle</mat-icon>
+        <span i18n>Profile</span>
+      </button>
+      <button mat-menu-item class="logout-button" (click)="logout()">
+        <mat-icon color="primary">logout</mat-icon>
+        <span i18n>Logout</span>
+      </button>
+      </mat-menu>
+    } @else {
+      <a mat-raised-button routerLink="/login" i18n>Login</a>
+    }
+  }
 </mat-toolbar>
+
+

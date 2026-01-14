@@ -1,6 +1,10 @@
 <div class="container">
   <div>
-  <h1 i18n>Welcome to coin</h1>
-    <p i18n>Login to your account to start sharing expenses !</p>
+    @if (user()) {
+      <h1 i18n>Welcome back, {{ user()!.name }} !</h1>
+    } @else {
+      <h1 i18n>Welcome to coin</h1>
+      <p i18n>Login to your account to start sharing expenses !</p>
+    }
   </div>
 </div>

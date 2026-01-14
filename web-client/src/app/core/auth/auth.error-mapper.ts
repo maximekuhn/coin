@@ -3,5 +3,5 @@ import { AuthError, AuthErrorKind } from "./auth.errors";
 
 export function mapToAuthError(_: HttpErrorResponse): AuthError {
   // TODO: implement mapToAuthError
-  return { kind: AuthErrorKind.BadCredentials };
+  return { kind: AuthErrorKind.Unknown };
 }
