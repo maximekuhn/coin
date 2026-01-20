@@ -1,102 +1,155 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template">
-    <body>
-      <trans-unit id="5935969404645960106" datatype="html">
+<?xml version='1.0' encoding='utf-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-US">
+  <file id="ngi18n" original="ng.template">
+    <unit id="app.waiting-initialization">
+      <notes>
+        <note category="location">src/app/app.html:6,11</note>
+        <note category="description">Information text displayed on the home page when the app is loading</note>
+      </notes>
+      <segment>
         <source>Waiting for application to initialize...</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/app.html</context>
-          <context context-type="linenumber">6,7</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1019650369270883436" datatype="html">
+        <target>En attente de l'initialisation de l'application</target>
+      </segment>
+    </unit>
+    <unit id="auth.error.bad-credentials">
+      <notes>
+        <note category="location">src/app/core/auth/auth.i18n.ts:6</note>
+        <note category="description">Authentication error when user provided bad credentials</note>
+      </notes>
+      <segment>
         <source>Bad credentials. Please check your email and/or password and try again.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/auth.i18n.ts</context>
-          <context context-type="linenumber">6</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3275385701539864219" datatype="html">
+        <target>Identifiants incorrects. Veuillez vérifier votre e-mail et/ou votre mot de passe, puis réessayer.</target>
+      </segment>
+    </unit>
+    <unit id="auth.error.unknown">
+      <notes>
+        <note category="location">src/app/core/auth/auth.i18n.ts:10</note>
+      </notes>
+      <segment>
         <source>Unknown authentication error.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/auth.i18n.ts</context>
-          <context context-type="linenumber">10</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1274686598843595771" datatype="html">
+        <target>Erreur d’authentification inconnue.</target>
+      </segment>
+    </unit>
+    <unit id="login.form.title">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.html:2,4</note>
+        <note category="description">Login form title</note>
+      </notes>
+      <segment>
         <source>Login to your account</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
-          <context context-type="linenumber">2,3</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="203827529942340818" datatype="html">
+        <target>Connexion à votre compte</target>
+      </segment>
+    </unit>
+    <unit id="login.form.email">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.html:4,5</note>
+        <note category="description">Email field for the login form</note>
+      </notes>
+      <segment>
         <source>Enter your email</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
-          <context context-type="linenumber">4</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1431416938026210429" datatype="html">
+        <target>Entrez votre e-mail</target>
+      </segment>
+    </unit>
+    <unit id="login.form.password">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.html:8,11</note>
+        <note category="description">Password field for the login form</note>
+      </notes>
+      <segment>
         <source>Password</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
-          <context context-type="linenumber">14</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2454050363478003966" datatype="html">
+        <target>Mot de passe</target>
+      </segment>
+    </unit>
+    <unit id="login.form.no-account">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.html:21,22</note>
+        <note category="description">Small text displayed below the login form to go to the register form</note>
+      </notes>
+      <segment>
+        <source>No account ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">Register</pc>
+        </source>
+        <target>Pas de compte ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">Inscrivez-vous</pc>
+        </target>
+      </segment>
+    </unit>
+    <unit id="login.form.submit">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.html:22,25</note>
+        <note category="description">Login form submit button</note>
+      </notes>
+      <segment>
         <source>Login</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.html</context>
-          <context context-type="linenumber">33,34</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/navbar/navbar.html</context>
-          <context context-type="linenumber">20,22</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="1536087519743707362" datatype="html">
+        <target>Connexion</target>
+      </segment>
+    </unit>
+    <unit id="snackbar.dismiss">
+      <notes>
+        <note category="location">src/app/core/auth/login-form/login-form.ts:82</note>
+      </notes>
+      <segment>
         <source>Dismiss</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/core/auth/login-form/login-form.ts</context>
-          <context context-type="linenumber">70</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4915431133669985304" datatype="html">
+        <target>Fermer</target>
+      </segment>
+    </unit>
+    <unit id="navbar.go-to-profile">
+      <notes>
+        <note category="location">src/app/layout/navbar/navbar.html:12,14</note>
+        <note category="description">Button in the navbar for user to go to his profile</note>
+      </notes>
+      <segment>
         <source>Profile</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/navbar/navbar.html</context>
-          <context context-type="linenumber">12,13</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="3797778920049399855" datatype="html">
+        <target>Profil</target>
+      </segment>
+    </unit>
+    <unit id="navbar.logout">
+      <notes>
+        <note category="location">src/app/layout/navbar/navbar.html:16,20</note>
+        <note category="description">Button in the navbar to logout</note>
+      </notes>
+      <segment>
         <source>Logout</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/navbar/navbar.html</context>
-          <context context-type="linenumber">16,17</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="9084867311619952183" datatype="html">
-        <source>Welcome back, <x id="INTERPOLATION" equiv-text="{{ user()!.name }}"/> !</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
-          <context context-type="linenumber">4,5</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="2456019682161622811" datatype="html">
+        <target>Déconnexion</target>
+      </segment>
+    </unit>
+    <unit id="navbar.login">
+      <notes>
+        <note category="location">src/app/layout/navbar/navbar.html:20,24</note>
+        <note category="description">Button in the navbar to login (only visible in guest mode)</note>
+      </notes>
+      <segment>
+        <source>Login</source>
+        <target>Connexion</target>
+      </segment>
+    </unit>
+    <unit id="home.welcome-back">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:4,5</note>
+        <note category="description">Greeting text shown on home page</note>
+      </notes>
+      <segment>
+        <source>Welcome back, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> !</source>
+        <target>Bon retour, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> !</target>
+      </segment>
+    </unit>
+    <unit id="home.title">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:6,7</note>
+        <note category="description">Main title for the home page in guest mode</note>
+      </notes>
+      <segment>
         <source>Welcome to coin</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
-          <context context-type="linenumber">6,7</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="7891025130714070614" datatype="html">
+        <target>Bienvenue sur coin</target>
+      </segment>
+    </unit>
+    <unit id="home.login">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:7,11</note>
+        <note category="description">Tells the user to login to start using the application</note>
+      </notes>
+      <segment>
         <source>Login to your account to start sharing expenses !</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/layout/page/home-page/home-page.html</context>
-          <context context-type="linenumber">7,9</context>
-        </context-group>
-      </trans-unit>
-    </body>
+        <target>Connectez-vous à votre compte pour commencer à partager des dépenses !</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
