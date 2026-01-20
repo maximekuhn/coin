@@ -79,7 +79,7 @@ export class LoginForm implements OnDestroy {
       SnackbarType.Error,
       SnackbarDuration.Short,
       translateAuthError(err),
-      $localize`Dismiss`,
+      $localize`:@@snackbar.dismiss:Dismiss`,
       'top',
     );
   }

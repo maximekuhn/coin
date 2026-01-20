@@ -1,11 +1,11 @@
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <h2 i18n>Login to your account</h2>
+  <h2 i18n="Login form title@@login.form.title">Login to your account</h2>
   <mat-form-field>
-    <mat-label i18n>Enter your email</mat-label>
+    <mat-label i18n="Email field for the login form@@login.form.email">Enter your email</mat-label>
     <input matInput type="email" placeholder="pat@example.com" formControlName="email" required />
   </mat-form-field>
   <mat-form-field>
-    <mat-label i18n>Password</mat-label>
+    <mat-label i18n="Password field for the login form@@login.form.password">Password</mat-label>
     <input
       matInput
       [type]="hidePassword() ? 'password' : 'text'"
@@ -18,7 +18,7 @@
     </button>
   </mat-form-field>
   <div class="bottom">
-    <p>No account ? <a routerLink="#TODO">Register</a></p>
-    <button matButton="filled" type="submit" [disabled]="!canSubmit()" i18n>Login</button>
+    <p i18n="Small text displayed below the login form to go to the register form@@login.form.no-account">No account ? <a routerLink="#TODO">Register</a></p>
+    <button matButton="filled" type="submit" [disabled]="!canSubmit()" i18n="Login form submit button@@login.form.submit">Login</button>
   </div>
 </form>

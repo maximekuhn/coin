@@ -3,7 +3,7 @@
 @if (isLoading()) {
   <div class="waiting-app-init">
     <mat-spinner />
-    <p i18n>Waiting for application to initialize...</p>
+    <p i18n="Information text displayed on the home page when the app is loading@@app.waiting-initialization">Waiting for application to initialize...</p>
   </div>
 } @else {
   <router-outlet />

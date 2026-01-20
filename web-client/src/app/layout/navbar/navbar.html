@@ -9,15 +9,15 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
           <mat-icon>account_circle</mat-icon>
-          <span i18n>Profile</span>
+          <span i18n="Button in the navbar for user to go to his profile@@navbar.go-to-profile">Profile</span>
         </button>
         <button mat-menu-item class="logout-button" (click)="logout()">
           <mat-icon color="primary">logout</mat-icon>
-          <span i18n>Logout</span>
+          <span i18n="Button in the navbar to logout@@navbar.logout">Logout</span>
         </button>
       </mat-menu>
     } @else {
-      <a mat-raised-button routerLink="/login" i18n>Login</a>
+      <a mat-raised-button routerLink="/login" i18n="Button in the navbar to login (only visible in guest mode)@@navbar.login">Login</a>
     }
   }
 </mat-toolbar>
