@@ -3,12 +3,13 @@
   <file id="ngi18n" original="ng.template">
     <unit id="app.waiting-initialization">
       <notes>
-        <note category="location">src/app/app.html:6,11</note>
-        <note category="description">Information text displayed on the home page when the app is loading</note>
+        <note category="location">src/app/app.html:11,17</note>
+        <note category="description">Information text displayed on the home page when the app is
+        loading</note>
       </notes>
       <segment>
-        <source>Waiting for application to initialize...</source>
-        <target>En attente de l'initialisation de l'application</target>
+        <source> Waiting for application to initialize... </source>
+        <target> En attente de l'initialisation de l'application... </target>
       </segment>
     </unit>
     <unit id="auth.error.bad-credentials">
@@ -18,7 +19,7 @@
       </notes>
       <segment>
         <source>Bad credentials. Please check your email and/or password and try again.</source>
-        <target>Identifiants incorrects. Veuillez vérifier votre e-mail et/ou votre mot de passe, puis réessayer.</target>
+        <target>Identifiants incorrects. Veuillez vérifier votre e-mail et/ou votre mot de passe et réessayer.</target>
       </segment>
     </unit>
     <unit id="auth.error.unknown">
@@ -27,7 +28,7 @@
       </notes>
       <segment>
         <source>Unknown authentication error.</source>
-        <target>Erreur d’authentification inconnue.</target>
+        <target>Erreur d'authentification inconnue.</target>
       </segment>
     </unit>
     <unit id="login.form.title">
@@ -37,7 +38,7 @@
       </notes>
       <segment>
         <source>Login to your account</source>
-        <target>Connexion à votre compte</target>
+        <target>Connectez-vous à votre compte</target>
       </segment>
     </unit>
     <unit id="login.form.email">
@@ -62,38 +63,78 @@
     </unit>
     <unit id="login.form.no-account">
       <notes>
-        <note category="location">src/app/core/auth/login-form/login-form.html:21,22</note>
+        <note category="location">src/app/core/auth/login-form/login-form.html:25,27</note>
         <note category="description">Small text displayed below the login form to go to the register form</note>
       </notes>
       <segment>
-        <source>No account ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">Register</pc>
+        <source> No account ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">Register</pc>
         </source>
-        <target>Pas de compte ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">Inscrivez-vous</pc>
+        <target> Pas de compte ? <pc id="0" equivStart="START_LINK" equivEnd="CLOSE_LINK" type="link" dispStart="&lt;a routerLink=&quot;#TODO&quot;&gt;" dispEnd="&lt;/a&gt;">S'inscrire</pc>
         </target>
       </segment>
     </unit>
     <unit id="login.form.submit">
       <notes>
-        <note category="location">src/app/core/auth/login-form/login-form.html:22,25</note>
+        <note category="location">src/app/core/auth/login-form/login-form.html:33,37</note>
         <note category="description">Login form submit button</note>
       </notes>
       <segment>
-        <source>Login</source>
-        <target>Connexion</target>
+        <source> Login </source>
+        <target> Connexion </target>
       </segment>
     </unit>
-    <unit id="snackbar.dismiss">
+    <unit id="create-group.form.title">
       <notes>
-        <note category="location">src/app/core/auth/login-form/login-form.ts:82</note>
+        <note category="location">src/app/core/group/create-group-form-dialog/create-group-form-dialog.html:2,6</note>
+        <note category="description">Create new group form title</note>
       </notes>
       <segment>
-        <source>Dismiss</source>
-        <target>Fermer</target>
+        <source>New group</source>
+        <target>Nouveau groupe</target>
+      </segment>
+    </unit>
+    <unit id="create-group.form.name">
+      <notes>
+        <note category="location">src/app/core/group/create-group-form-dialog/create-group-form-dialog.html:7,9</note>
+        <note category="description">Input field for the new group name in the form to create a new group</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+        <target>Nom</target>
+      </segment>
+    </unit>
+    <unit id="create-group.form.submit">
+      <notes>
+        <note category="location">src/app/core/group/create-group-form-dialog/create-group-form-dialog.html:18,21</note>
+        <note category="description">Create new group form submit button</note>
+      </notes>
+      <segment>
+        <source> Create </source>
+        <target> Créer </target>
+      </segment>
+    </unit>
+    <unit id="group.error.name-not-available">
+      <notes>
+        <note category="location">src/app/core/group/group.i18n.ts:6</note>
+        <note category="description">Error returned to the user when he tries to create a group with a name that is not available</note>
+      </notes>
+      <segment>
+        <source>You already own a group with the same name. Please pick another one and try again.</source>
+        <target>Vous possédez déjà un groupe portant le même nom. Veuillez en choisir un autre et réessayer.</target>
+      </segment>
+    </unit>
+    <unit id="group.error.unknown">
+      <notes>
+        <note category="location">src/app/core/group/group.i18n.ts:10</note>
+      </notes>
+      <segment>
+        <source>Unknown group related error.</source>
+        <target>Erreur inconnue liée au groupe.</target>
       </segment>
     </unit>
     <unit id="navbar.go-to-profile">
       <notes>
-        <note category="location">src/app/layout/navbar/navbar.html:12,14</note>
+        <note category="location">src/app/layout/navbar/navbar.html:13,16</note>
         <note category="description">Button in the navbar for user to go to his profile</note>
       </notes>
       <segment>
@@ -103,7 +144,7 @@
     </unit>
     <unit id="navbar.logout">
       <notes>
-        <note category="location">src/app/layout/navbar/navbar.html:16,20</note>
+        <note category="location">src/app/layout/navbar/navbar.html:18,22</note>
         <note category="description">Button in the navbar to logout</note>
       </notes>
       <segment>
@@ -113,7 +154,7 @@
     </unit>
     <unit id="navbar.login">
       <notes>
-        <note category="location">src/app/layout/navbar/navbar.html:20,24</note>
+        <note category="location">src/app/layout/navbar/navbar.html:27,31</note>
         <note category="description">Button in the navbar to login (only visible in guest mode)</note>
       </notes>
       <segment>
@@ -123,17 +164,28 @@
     </unit>
     <unit id="home.welcome-back">
       <notes>
-        <note category="location">src/app/layout/page/home-page/home-page.html:4,5</note>
+        <note category="location">src/app/layout/page/home-page/home-page.html:5,7</note>
         <note category="description">Greeting text shown on home page</note>
       </notes>
       <segment>
-        <source>Welcome back, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> !</source>
-        <target>Bon retour, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> !</target>
+        <source> Welcome back, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> ! </source>
+        <target> Bon retour, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> ! </target>
+      </segment>
+    </unit>
+    <unit id="home.create-new-group">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:14,17</note>
+        <note category="description">Button in the home page that allows the current user to create a new
+          group</note>
+      </notes>
+      <segment>
+        <source> Create new group </source>
+        <target> Créer un nouveau groupe </target>
       </segment>
     </unit>
     <unit id="home.title">
       <notes>
-        <note category="location">src/app/layout/page/home-page/home-page.html:6,7</note>
+        <note category="location">src/app/layout/page/home-page/home-page.html:17,18</note>
         <note category="description">Main title for the home page in guest mode</note>
       </notes>
       <segment>
@@ -143,12 +195,40 @@
     </unit>
     <unit id="home.login">
       <notes>
-        <note category="location">src/app/layout/page/home-page/home-page.html:7,11</note>
+        <note category="location">src/app/layout/page/home-page/home-page.html:19,24</note>
         <note category="description">Tells the user to login to start using the application</note>
       </notes>
       <segment>
-        <source>Login to your account to start sharing expenses !</source>
-        <target>Connectez-vous à votre compte pour commencer à partager des dépenses !</target>
+        <source> Login to your account to start sharing expenses ! </source>
+        <target> Connectez-vous à votre compte pour commencer à partager des dépenses ! </target>
+      </segment>
+    </unit>
+    <unit id="group.creation.success">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.ts:46</note>
+        <note category="description">Message shown to the user when he successfully created a group</note>
+      </notes>
+      <segment>
+        <source>Group created successfully.</source>
+        <target>Groupe créé avec succès.</target>
+      </segment>
+    </unit>
+    <unit id="snackbar.ok">
+      <notes>
+        <note category="location">src/app/shared/ui/snackbar/snackbar.constants.ts:26</note>
+      </notes>
+      <segment>
+        <source>Ok</source>
+        <target>OK</target>
+      </segment>
+    </unit>
+    <unit id="snackbar.dismiss">
+      <notes>
+        <note category="location">src/app/shared/ui/snackbar/snackbar.constants.ts:28</note>
+      </notes>
+      <segment>
+        <source>Dismiss</source>
+        <target>Fermer</target>
       </segment>
     </unit>
   </file>
