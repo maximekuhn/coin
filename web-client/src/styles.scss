@@ -7,16 +7,12 @@
 
 html {
   height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
+  @include mat.theme((color: (primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
 }
 
 body {
@@ -44,11 +40,16 @@ body {
 
 .snackbar-error {
   font-size: 32px;
-  @include mat.snack-bar-overrides(
-    (
-      button-color: black,
+  @include mat.snack-bar-overrides((button-color: black,
       container-color: var(--mat-sys-error-container),
       supporting-text-color: black,
-    )
-  );
+    ));
+}
+
+.snackbar-success {
+  font-size: 32px;
+  @include mat.snack-bar-overrides((button-color: black,
+      container-color: var(--mat-sys-primary-container),
+      supporting-text-color: black,
+    ));
 }

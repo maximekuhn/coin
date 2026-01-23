@@ -10,7 +10,11 @@ import { AuthError } from '../auth.errors';
 import { Subscription } from 'rxjs';
 import { translateAuthError } from '../auth.i18n';
 import { SnackbarService } from '../../../shared/ui/snackbar/snackbar.service';
-import { SnackbarDuration, SnackbarType } from '../../../shared/ui/snackbar/snackbar.types';
+import {
+  SnackbarAction,
+  SnackbarDuration,
+  SnackbarType,
+} from '../../../shared/ui/snackbar/snackbar.types';
 
 @Component({
   selector: 'app-login-form',
@@ -79,7 +83,7 @@ export class LoginForm implements OnDestroy {
       SnackbarType.Error,
       SnackbarDuration.Short,
       translateAuthError(err),
-      $localize`:@@snackbar.dismiss:Dismiss`,
+      SnackbarAction.Dismiss,
       'top',
     );
   }

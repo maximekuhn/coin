@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { SnackbarDuration, SnackbarType } from './snackbar.types';
+import { SnackbarAction, SnackbarDuration, SnackbarType } from './snackbar.types';
 import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { getSnackbarDurationMs, getSnackbarPanelClass } from './snackbar.constants';
+import {
+  getSnackbarDurationMs,
+  getSnackbarLocalizedAction,
+  getSnackbarPanelClass,
+} from './snackbar.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +17,10 @@ export class SnackbarService {
     type: SnackbarType,
     duration: SnackbarDuration,
     message: string,
-    action: string,
+    action: SnackbarAction,
     position: MatSnackBarVerticalPosition = 'bottom',
   ) {
-    this.snackBar.open(message, action, {
+    this.snackBar.open(message, getSnackbarLocalizedAction(action), {
       duration: getSnackbarDurationMs(duration) ?? undefined,
       panelClass: getSnackbarPanelClass(type),
       verticalPosition: position,
