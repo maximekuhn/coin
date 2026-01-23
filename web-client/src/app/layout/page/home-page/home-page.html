@@ -1,11 +1,23 @@
 <div class="container">
   <div>
     @if (user()) {
-      <h1 i18n="Greeting text shown on home page@@home.welcome-back">Welcome back, {{ user()!.name }} !</h1>
-      <button matButton (click)="openCreateGroupDialog()" i18n="Button in the home page that allows the current user to create a new group@@home.create-new-group">Create new group</button>
+      <h1 i18n="Greeting text shown on home page@@home.welcome-back">
+        Welcome back, {{ user()!.name }} !
+      </h1>
+      <button
+        matButton
+        (click)="openCreateGroupDialog()"
+        i18n="
+          Button in the home page that allows the current user to create a new
+          group@@home.create-new-group"
+      >
+        Create new group
+      </button>
     } @else {
       <h1 i18n="Main title for the home page in guest mode@@home.title">Welcome to coin</h1>
-      <p i18n="Tells the user to login to start using the application@@home.login">Login to your account to start sharing expenses !</p>
+      <p i18n="Tells the user to login to start using the application@@home.login">
+        Login to your account to start sharing expenses !
+      </p>
     }
   </div>
 </div>

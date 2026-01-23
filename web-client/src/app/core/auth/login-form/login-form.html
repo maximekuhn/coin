@@ -18,7 +18,19 @@
     </button>
   </mat-form-field>
   <div class="bottom">
-    <p i18n="Small text displayed below the login form to go to the register form@@login.form.no-account">No account ? <a routerLink="#TODO">Register</a></p>
-    <button matButton="filled" type="submit" [disabled]="!canSubmit()" i18n="Login form submit button@@login.form.submit">Login</button>
+    <p
+      i18n="
+        Small text displayed below the login form to go to the register form@@login.form.no-account"
+    >
+      No account ? <a routerLink="#TODO">Register</a>
+    </p>
+    <button
+      matButton="filled"
+      type="submit"
+      [disabled]="!canSubmit()"
+      i18n="Login form submit button@@login.form.submit"
+    >
+      Login
+    </button>
   </div>
 </form>
