@@ -7,6 +7,7 @@ import { AuthStatus } from '../../core/auth/auth.models';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { formatUsername } from '../../shared/utils/user.utils';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +22,15 @@ export class Navbar {
 
   readonly isLoading = computed(() => this.authService.authState().status === AuthStatus.Unknown);
 
-  readonly username = computed(() => this.authService.user()?.name ?? '');
+  readonly isLoggedIn = computed(
+    () => this.authService.authState().status === AuthStatus.Authenticated,
+  );
+
+  readonly username = computed(() => {
+    const name = this.authService.user()?.name ?? '';
+    const id = this.authService.user()?.id ?? '';
+    return formatUsername(name, id);
+  });
 
   logout() {
     this.authService

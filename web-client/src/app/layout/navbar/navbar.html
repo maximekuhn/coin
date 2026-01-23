@@ -4,7 +4,7 @@
   <span class="spacer"></span>
 
   @if (!isLoading()) {
-    @if (username() !== '') {
+    @if (isLoggedIn()) {
       <button matButton [matMenuTriggerFor]="menu" class="user-menu">{{ username() }}</button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
