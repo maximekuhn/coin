@@ -38,7 +38,10 @@ export class HomePage {
     dialogRef
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((result: CreateGroupFormDialogResult) => {
+      .subscribe((result: CreateGroupFormDialogResult | undefined) => {
+        if (result === undefined) {
+          return;
+        }
         if (result.status === CreateGroupFormResultType.Success) {
           this.snackbarService.open(
             SnackbarType.Success,
