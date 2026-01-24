@@ -1,23 +1,34 @@
-<div class="container">
-  <div>
-    @if (user()) {
-      <h1 i18n="Greeting text shown on home page@@home.welcome-back">
-        Welcome back, {{ user()!.name }} !
-      </h1>
-      <button
-        matButton
-        (click)="openCreateGroupDialog()"
-        i18n="
-          Button in the home page that allows the current user to create a new
-          group@@home.create-new-group"
-      >
-        Create new group
-      </button>
-    } @else {
-      <h1 i18n="Main title for the home page in guest mode@@home.title">Welcome to coin</h1>
-      <p i18n="Tells the user to login to start using the application@@home.login">
-        Login to your account to start sharing expenses !
-      </p>
-    }
+@if (user()) {
+  <div class="home-layout-authenticated">
+    <div class="top-section">
+      <div class="overall-balance"><app-overall-balance /></div>
+      <div class="recent-expenses"><app-latest-expenses /></div>
+    </div>
+
+    <mat-divider class="sections-divider"></mat-divider>
+
+    <div class="groups-section">
+      <div class="groups-section-header">
+        <h2>Groups</h2>
+        <button matButton color="primary" (click)="openCreateGroupDialog()">
+          <mat-icon>add</mat-icon>
+          <ng-container
+            i18n="
+              Button in the home page that allows the current user to create a new
+              group@@home.create-new-group"
+          >
+            Create new group
+          </ng-container>
+        </button>
+      </div>
+      <app-group-overview-list />
+    </div>
   </div>
-</div>
+} @else {
+  <div class="home-layout-guest">
+    <h1 i18n="Main title for the home page in guest mode@@home.title">Welcome to coin</h1>
+    <p i18n="Tells the user to login to start using the application@@home.login">
+      Login to your account to start sharing expenses !
+    </p>
+  </div>
+}

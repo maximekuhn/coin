@@ -1,0 +1,40 @@
+@if (isLoading()) {
+  <mat-spinner />
+} @else {
+  @if (groups().groups.length === 0) {
+    <p>You have no group yet. Create one to start sharing expenses.</p>
+  } @else {
+    <mat-nav-list>
+      @for (group of groups().groups; track group.id) {
+        <mat-list-item class="group-list-item">
+          <mat-icon matListItemIcon>groups</mat-icon>
+
+          <h3 matListItemTitle>{{ group.name }}</h3>
+
+          <div matListItemLine>
+            <span>
+              Owner: {{ formatOwnerName(group.owner) }} | Created: {{ group.createdAt | date }} |
+              @if (group.lastActivity) {
+                Last activity: {{ group.lastActivity | date }} |
+              }
+              @if (group.currentUserBalanceEuros) {
+                Your balance: {{ group.currentUserBalanceEuros }} €
+              } @else if (group.lastActivity) {
+                Settled up
+              } @else {
+                No expense yet
+              }
+            </span>
+          </div>
+
+          <div matListItemMeta class="group-meta-action">
+            <mat-icon matListItemIcon class="chevron">chevron_right</mat-icon>
+            <span class="go-arrow">
+              <mat-icon matListItemIcon class="arrow">arrow_forward</mat-icon>
+            </span>
+          </div>
+        </mat-list-item>
+      }
+    </mat-nav-list>
+  }
+}

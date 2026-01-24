@@ -1,0 +1,24 @@
+.group-meta-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.go-arrow {
+  display: none;
+  font-size: 0.875rem;
+  color: var(--mat-sys-primary);
+  align-items: center;
+  gap: 4px;
+}
+
+.group-list-item:hover .chevron {
+  display: none;
+}
+
+.group-list-item:hover .go-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}

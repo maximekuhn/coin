@@ -1,8 +1,39 @@
-.container {
+.home-layout-guest {
   text-align: center;
   height: 60%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.home-layout-authenticated {
+  width: 95%;
+  margin: 0 auto;
+}
+
+.sections-divider {
+  margin: 2%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.top-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  .overall-balance {
+    background-color: cyan;
+  }
+
+  .recent-expenses {
+    background-color: magenta;
+  }
+}
+
+.groups-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
