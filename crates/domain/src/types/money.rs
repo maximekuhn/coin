@@ -1,3 +1,5 @@
+use std::ops::{AddAssign, SubAssign};
+
 /// Money represents a monetary amount, in euros.
 #[derive(Debug, PartialEq)]
 pub struct Money {
@@ -13,6 +15,10 @@ impl Money {
         Self::from_cents(euros * 100)
     }
 
+    pub fn zero() -> Self {
+        Self::from_cents(0)
+    }
+
     pub fn cents(&self) -> i64 {
         self.cents
     }
@@ -23,5 +29,17 @@ impl Money {
 
     pub fn is_negative(&self) -> bool {
         self.cents < 0
+    }
+}
+
+impl AddAssign for Money {
+    fn add_assign(&mut self, rhs: Self) {
+        self.cents += rhs.cents;
+    }
+}
+
+impl SubAssign for Money {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.cents -= rhs.cents;
     }
 }

@@ -76,7 +76,7 @@ pub async fn add_member(
     Ok(StatusCode::NO_CONTENT)
 }
 
-pub async fn get_all(
+pub async fn get_all_overview(
     State(state): State<AppState>,
     User(user, _, _): User,
     Query(query): Query<GetAllQuery>,
@@ -155,6 +155,10 @@ struct GroupDto {
     name: String,
     owner: UserDto,
     created_at: DateTime<Utc>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    last_activity: Option<DateTime<Utc>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    current_user_balance_euros: Option<i64>,
 }
 
 #[derive(Serialize)]
@@ -171,6 +175,12 @@ impl From<application::queries::get_groups_for_user::GroupSummary> for GroupDto 
             name: group_summary.name.value(),
             owner: group_summary.owner.into(),
             created_at: group_summary.created_at,
+            last_activity: group_summary
+                .last_expense
+                .map(|expense| expense.occurred_at),
+            current_user_balance_euros: group_summary
+                .current_user_balance
+                .map(|balance| balance.euros()),
         }
     }
 }

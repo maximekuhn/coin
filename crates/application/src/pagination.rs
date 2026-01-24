@@ -50,6 +50,12 @@ impl Pagination {
     }
 }
 
+impl Default for Pagination {
+    fn default() -> Self {
+        Self::new(Self::DEFAULT_PAGE, Self::DEFAULT_PAGE_SIZE).expect("default page is valid")
+    }
+}
+
 // clippy: database cannot depend on application as this would create a circular
 // dependency. That's why we need to convert from application to database.
 #[allow(clippy::from_over_into)]
@@ -139,5 +145,12 @@ mod tests {
             Pagination::new_from_optional(None, Some(NonZeroUsize::new(87).unwrap())).unwrap();
         assert_eq!(1, pagination.page.get());
         assert_eq!(87, pagination.page_size.get());
+    }
+
+    #[test]
+    fn new_default_ok() {
+        let pagination = Pagination::default();
+        assert_eq!(1, pagination.page().get());
+        assert_eq!(10, pagination.page_size().get());
     }
 }

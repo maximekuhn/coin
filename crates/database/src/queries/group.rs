@@ -174,6 +174,7 @@ pub async fn get_all_for_user(
     FROM coin_group cg
     LEFT JOIN coin_group_member cgm ON cgm.coin_group_id = cg.id
     WHERE cg.id IN ({})
+    ORDER BY cg.created_at DESC, cg.id
     "#,
         placeholders
     );
