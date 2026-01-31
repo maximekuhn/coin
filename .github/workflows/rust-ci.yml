@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: rustup show active-toolchain
+      - run: rustup show active-toolchain --verbose
       - run: rustup component add rustfmt clippy
       - uses: Swatinem/rust-cache@v2
 
@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: rustup show active-toolchain
+      - run: rustup show active-toolchain --verbose
       - uses: Swatinem/rust-cache@v2
 
       - run: cargo test --locked --workspace --all-features --doc
@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: rustup show active-toolchain
+      - run: rustup show active-toolchain --verbose
       - uses: Swatinem/rust-cache@v2
 
       - run: cargo test --locked --workspace --all-features --all-targets
