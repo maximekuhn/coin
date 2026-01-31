@@ -15,9 +15,8 @@ impl<'a> UsersHelper<'a> {
     }
 
     pub async fn create_user(&mut self, username: &str) -> anyhow::Result<Uuid> {
-        Ok(self
-            .create_user_with_name_and_email(username, format!("{}@gmail.com", username).as_str())
-            .await?)
+        self.create_user_with_name_and_email(username, format!("{}@gmail.com", username).as_str())
+            .await
     }
 
     pub async fn create_user_with_name_and_email(

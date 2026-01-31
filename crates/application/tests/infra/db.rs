@@ -17,7 +17,7 @@ pub async fn build_test_database(
             return Err(anyhow::anyhow!("path cannot be converted to str"));
         }
     };
-    let pool = database::setup::setup_database(&db_file).await?;
+    let pool = database::setup::setup_database(db_file).await?;
     Ok(pool)
 }
 

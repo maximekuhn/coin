@@ -57,7 +57,7 @@ impl<'a> ExpenseEntriesHelper<'a> {
             participants: IncludeParticipants::List {
                 participants: participants
                     .into_iter()
-                    .map(|id| UserId::new(id))
+                    .map(UserId::new)
                     .collect::<Result<_, _>>()?,
             },
             total: Money::from_euros(total_euros),
