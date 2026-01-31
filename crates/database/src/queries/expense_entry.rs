@@ -110,6 +110,14 @@ pub async fn get_by_id(
     ))
 }
 
+/// Returns all expense entries associated to the provided `expense_id`.
+///
+/// # Arguments
+/// - `tx`
+/// - `expense_id`
+///
+/// # Return
+/// - a list of expense entries, sorted by creation date (ASC) and expense entry id
 pub async fn get_all_by_expense_id(
     tx: &mut crate::Transaction<'_>,
     expense_id: &ExpenseId,
@@ -130,6 +138,7 @@ pub async fn get_all_by_expense_id(
     FROM expense_entry ee
     LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
     WHERE ee.expense_id = ?
+    ORDER BY ee.created_at, ee.id
     "#,
     )
     .bind(expense_id.value())
@@ -147,7 +156,7 @@ pub async fn get_all_by_expense_id(
 /// - `page` pagination to apply to active expense entries
 ///
 /// # Return
-/// - a list of expense entires, sorted by (system) creation date and entry id
+/// - a list of expense entires, sorted by (system) creation date (DESC) and entry id
 pub async fn get_all_active_for_group(
     tx: &mut crate::Transaction<'_>,
     group_id: &GroupId,
