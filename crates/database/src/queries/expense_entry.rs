@@ -2,7 +2,7 @@ use domain::{
     entities::ExpenseEntry,
     types::{
         expense_entry_id::ExpenseEntryId, expense_entry_status::ExpenseEntryStatus,
-        expense_id::ExpenseId, group_id::GroupId,
+        expense_id::ExpenseId, group_id::GroupId, user_id::UserId,
     },
 };
 use sqlx::QueryBuilder;
@@ -202,6 +202,72 @@ pub async fn count_all_active_for_group(
         "#,
     )
     .bind(group_id.value())
+    .fetch_one(tx.as_mut())
+    .await?;
+    Ok(count as u64)
+}
+
+pub async fn get_all_active_for_user(
+    tx: &mut crate::Transaction<'_>,
+    user_id: &UserId,
+    page: DbPagination,
+) -> Result<Vec<ExpenseEntry>, crate::Error> {
+    let rows: Vec<DbExpenseEntryWithOptionalParticipant> = sqlx::query_as(
+        r#"
+        WITH paged_expenses AS (
+            SELECT ee.id
+            FROM expense_entry ee
+            LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
+            WHERE ee.status IS NULL
+            AND (
+                eep.participant_id = ?
+                OR ee.author_id = ?
+            )
+            ORDER BY ee.occurred_at DESC, ee.id
+            LIMIT ? OFFSET ?
+        )
+        SELECT
+            ee.id,
+            ee.expense_id,
+            ee.coin_group_id,
+            ee.payer_id,
+            ee.status,
+            ee.total,
+            ee.author_id,
+            ee.occurred_at,
+            ee.created_at,
+            eep.participant_id
+        FROM expense_entry ee
+        JOIN paged_expenses pe ON pe.id = ee.id
+        LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
+        ORDER BY ee.occurred_at DESC, ee.id
+        "#,
+    )
+    .bind(user_id.value())
+    .bind(user_id.value())
+    .bind(page.limit as i64)
+    .bind(page.offset as i64)
+    .fetch_all(tx.as_mut())
+    .await?;
+
+    flatten_expense_entries_with_participants(rows)
+}
+
+pub async fn count_all_active_for_user(
+    tx: &mut crate::Transaction<'_>,
+    user_id: &UserId,
+) -> Result<u64, crate::Error> {
+    let count: i64 = sqlx::query_scalar(
+        r#"
+        SELECT COUNT(*)
+        FROM expense_entry ee
+        LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
+        WHERE eep.participant_id = ? OR ee.author_id = ?
+        AND ee.status IS NULL
+        "#,
+    )
+    .bind(user_id.value())
+    .bind(user_id.value())
     .fetch_one(tx.as_mut())
     .await?;
     Ok(count as u64)

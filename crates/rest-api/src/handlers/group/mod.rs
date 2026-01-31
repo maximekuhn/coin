@@ -19,6 +19,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{
+    dtos::list_response::ListResponse,
     error::{ApiError, ErrorKind},
     extractors::user::User,
     state::AppState,
@@ -80,7 +81,7 @@ pub async fn get_all_overview(
     State(state): State<AppState>,
     User(user, _, _): User,
     Query(query): Query<GetAllQuery>,
-) -> Result<Json<GetAllResponse>, ApiError> {
+) -> Result<Json<ListResponse<GroupDto>>, ApiError> {
     let pagination = Pagination::new_from_optional(query.page, query.page_size)?;
 
     let mut tx = state.db_pool.begin().await?;
@@ -102,7 +103,7 @@ pub async fn get_all_overview(
     );
 
     let groups = output.groups.into_iter().map(GroupDto::from).collect();
-    Ok(Json(GetAllResponse {
+    Ok(Json(ListResponse {
         data: groups,
         request_pagination: pagination.into(),
         total_items: output.total_items,
@@ -135,22 +136,7 @@ pub struct GetAllQuery {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetAllResponse {
-    data: Vec<GroupDto>,
-    request_pagination: PaginationDto,
-    total_items: usize,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct PaginationDto {
-    page: usize,
-    page_size: usize,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct GroupDto {
+pub struct GroupDto {
     id: Uuid,
     name: String,
     owner: UserDto,
@@ -190,15 +176,6 @@ impl From<application::queries::get_groups_for_user::UserSummary> for UserDto {
         Self {
             id: user_summary.id.value(),
             name: user_summary.name.value(),
-        }
-    }
-}
-
-impl From<Pagination> for PaginationDto {
-    fn from(p: Pagination) -> Self {
-        Self {
-            page: p.page().get(),
-            page_size: p.page_size().get(),
         }
     }
 }

@@ -12,6 +12,7 @@ use crate::state::AppState;
 
 mod auth;
 mod config;
+mod dtos;
 mod error;
 mod extractors;
 mod handlers;
@@ -64,6 +65,10 @@ fn routes(state: AppState) -> Router {
         .route(
             "/groups/{group_id}/expenses",
             get(handlers::group::expense::get_all),
+        )
+        .route(
+            "/expenses/latest",
+            get(handlers::expense::get_latest_for_user),
         )
         .route("/hello", get(handlers::dummy::hello_user))
         .with_state(state);

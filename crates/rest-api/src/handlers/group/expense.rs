@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{
+    dtos::list_response::ListResponse,
     error::{ApiError, ErrorKind},
     extractors::user::User,
     state::AppState,
@@ -65,7 +66,7 @@ pub async fn get_all(
     User(user, _, _): User,
     Query(query): Query<GetAllQuery>,
     Path(group_id): Path<Uuid>,
-) -> Result<Json<GetAllResponse>, ApiError> {
+) -> Result<Json<ListResponse<ExpenseDto>>, ApiError> {
     let group_id = GroupId::new(group_id)?;
     let pagination = Pagination::new_from_optional(query.page, query.page_size)?;
 
@@ -89,7 +90,7 @@ pub async fn get_all(
     );
 
     let expenses = output.expenses.into_iter().map(ExpenseDto::from).collect();
-    Ok(Json(GetAllResponse {
+    Ok(Json(ListResponse {
         data: expenses,
         request_pagination: pagination.into(),
         total_items: output.total_items,
@@ -122,22 +123,7 @@ pub struct GetAllQuery {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetAllResponse {
-    data: Vec<ExpenseDto>,
-    request_pagination: PaginationDto,
-    total_items: usize,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct PaginationDto {
-    page: usize,
-    page_size: usize,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct ExpenseDto {
+pub struct ExpenseDto {
     id: Uuid,
     payer: UserDto,
     participants: Vec<UserDto>,
@@ -173,15 +159,6 @@ impl From<application::queries::get_expenses_for_group::UserSummary> for UserDto
         Self {
             id: user_summary.id.value(),
             name: user_summary.name.value(),
-        }
-    }
-}
-
-impl From<Pagination> for PaginationDto {
-    fn from(p: Pagination) -> Self {
-        Self {
-            page: p.page().get(),
-            page_size: p.page_size().get(),
         }
     }
 }

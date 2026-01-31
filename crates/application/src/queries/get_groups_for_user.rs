@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    num::NonZeroUsize,
-};
+use std::{collections::HashMap, num::NonZeroUsize};
 
 use chrono::{DateTime, Utc};
 use domain::{
@@ -12,7 +9,7 @@ use domain::{
     },
 };
 
-use crate::pagination::Pagination;
+use crate::{common, pagination::Pagination};
 
 pub struct GetGroupsForUserQuery {
     pub current_user: UserId,
@@ -47,8 +44,7 @@ impl GetGroupsForUserQuery {
             });
         }
 
-        let user_ids = get_user_ids(&groups);
-        let users = database::queries::user::get_all_in_ids(tx, user_ids).await?;
+        let users = common::user::fetch_users(tx, &groups).await?;
 
         let groups_with_expenses = get_all_expenses_for_groups(tx, groups).await?;
 
@@ -130,17 +126,6 @@ fn build_group_summaries(
         out.push(gs);
     }
     out
-}
-
-fn get_user_ids(groups: &[Group]) -> HashSet<UserId> {
-    let mut ids = HashSet::new();
-    for group in groups {
-        ids.insert(group.owner_id);
-        for member in &group.members {
-            ids.insert(*member);
-        }
-    }
-    ids
 }
 
 pub struct Output {
