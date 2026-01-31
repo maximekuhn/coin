@@ -1,26 +1,43 @@
 <form [formGroup]="createExpenseForm" (ngSubmit)="createExpense()">
   <h2 i18n="Create new expense form title@@create-expense.form.title">Add expense</h2>
   <mat-form-field>
-    <mat-label>Amount (€)</mat-label>
+    <mat-label i18n="Label for amount input field@@create-expense.form.label.amount"
+      >Amount (€)</mat-label
+    >
     <input matInput type="number" placeholder="25€" formControlName="amount" required />
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Select group</mat-label>
+    <mat-label
+      i18n="
+        Label to select group to which the new expense will be
+        added@@create-expense.form.label.group"
+      >Select group</mat-label
+    >
     <mat-select formControlName="groupId" required>
       @for (group of groups(); track group.id) {
         <mat-option [value]="group.id">
           {{ group.name }}
         </mat-option>
       } @empty {
-        <mat-option disabled
+        <mat-option
+          disabled
+          i18n="
+            Text shown in the group selection when the user is not member of any
+            group@@create-expense.form.no-group"
           >No groups available. You must belong to a group to start creating expenses.</mat-option
         >
       }
     </mat-select>
   </mat-form-field>
 
-  <button matButton="filled" type="button" (click)="createExpense()" [disabled]="!canSubmit()">
+  <button
+    matButton="filled"
+    type="button"
+    (click)="createExpense()"
+    [disabled]="!canSubmit()"
+    i18n="Button to submit the new expense form@@create-expense.form.submit"
+  >
     Create
   </button>
 </form>

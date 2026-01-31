@@ -1,4 +1,6 @@
-<h2>Latest expenses</h2>
+<h2 i18n="Title for the latest expenses section located in the home page@@home.latest-expenses">
+  Latest expenses
+</h2>
 @if (isLoading()) {
   <div class="latest-expenses-spinner">
     <mat-spinner />
@@ -12,8 +14,24 @@
 
         <div matListItemLine>
           <span>
-            Paid by: {{ formatPayerName(expense.paidBy) }} | Date: {{ expense.occurredAt | date }} |
-            Group: <span class="expense-group-name">{{ expense.group.name }}</span>
+            <ng-container
+              i18n="
+                Label to indicate who payed the expense located in latest expenses
+                section@@home.latest-expenses.paid-by"
+              >Paid by</ng-container
+            >: {{ formatPayerName(expense.paidBy) }} |
+            <ng-container
+              i18n="
+                Label to indicate the expense's date; located in the latest expenses
+                section@@home.latest-expenses.date"
+              >Date</ng-container
+            >: {{ expense.occurredAt | date }} |
+            <ng-container
+              i18n="
+                Label to indicate to which group the expense belongs to; located in the latest
+                expenses section@@home.latest-expenses.group"
+              >Group</ng-container
+            >: <span class="expense-group-name">{{ expense.group.name }}</span>
           </span>
         </div>
       </mat-list-item>

@@ -2,7 +2,13 @@
   <mat-spinner />
 } @else {
   @if (groups().groups.length === 0) {
-    <p>You have no group yet. Create one to start sharing expenses.</p>
+    <p
+      i18n="
+        Text in the groups over view list to indicate the user has no
+        group@@groups-overview.no-group"
+    >
+      You have no group yet. Create one to start sharing expenses.
+    </p>
   } @else {
     <mat-nav-list>
       @for (group of groups().groups; track group.id) {
@@ -13,21 +19,51 @@
 
           <div matListItemLine>
             <span>
-              Owner: {{ formatOwnerName(group.owner) }} | Created: {{ group.createdAt | date }} |
+              <ng-container
+                i18n="Label for group owner; located in groups overview list@@groups-overview.owner"
+                >Owner</ng-container
+              >: {{ formatOwnerName(group.owner) }} |
+              <ng-container
+                i18n="
+                  Label for group creation date; located in groups overview
+                  list@@groups-overview.created-at"
+                >Created</ng-container
+              >: {{ group.createdAt | date }} |
               @if (group.lastActivity) {
-                Last activity: {{ group.lastActivity | date }} |
+                <ng-container
+                  i18n="
+                    Label for group's last activity; located in groups overview
+                    list@@groups-overview.last-activity"
+                  >Last activity</ng-container
+                >: {{ group.lastActivity | date }} |
               }
               @if (group.currentUserBalanceEuros) {
-                Your balance:
+                <ng-container
+                  i18n="
+                    Label for logged user's balance within the group; located in groups overview
+                    list@@groups-overview.balance"
+                  >Your balance</ng-container
+                >:
                 <span
                   [class.negative-balance]="group.currentUserBalanceEuros < 0"
                   [class.positive-balance]="group.currentUserBalanceEuros > 0"
                   >{{ group.currentUserBalanceEuros | currency: 'EUR' }}</span
                 >
               } @else if (group.lastActivity) {
-                <span class="settled-up">Settled up</span>
+                <span
+                  class="settled-up"
+                  i18n="
+                    Text to indicate all debts are settled for the group; located in groups overview
+                    list@@groups-overview.settled-up"
+                  >Settled up</span
+                >
               } @else {
-                No expense yet
+                <ng-container
+                  i18n="
+                    Text to indicate the group does not contain any expense; located in groups
+                    overview list@@groups-overview.no-expense"
+                  >No expense yet</ng-container
+                >
               }
             </span>
           </div>

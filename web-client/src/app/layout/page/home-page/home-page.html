@@ -9,7 +9,9 @@
 
     <div class="groups-section">
       <div class="groups-section-header">
-        <h2>Groups</h2>
+        <h2 i18n="Title for the groups section located in the home page@@home.groups.title">
+          Groups
+        </h2>
         <button matButton color="primary" (click)="openCreateGroupDialog()">
           <mat-icon>add</mat-icon>
           <ng-container
@@ -26,7 +28,9 @@
   </div>
   <button matFab extended class="new-expense-button" (click)="openCreateExpenseDialog()">
     <mat-icon>add_card</mat-icon>
-    New expense
+    <ng-container i18n="Floating action button to create a new expense@@home.new-expense-button">
+      New expense
+    </ng-container>
   </button>
 } @else {
   <div class="home-layout-guest">
