@@ -22,7 +22,7 @@
                 <span
                   [class.negative-balance]="group.currentUserBalanceEuros < 0"
                   [class.positive-balance]="group.currentUserBalanceEuros > 0"
-                  >{{ group.currentUserBalanceEuros }}€</span
+                  >{{ group.currentUserBalanceEuros | currency: 'EUR' }}</span
                 >
               } @else if (group.lastActivity) {
                 <span class="settled-up">Settled up</span>
