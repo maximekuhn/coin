@@ -162,16 +162,6 @@
         <target>Connexion</target>
       </segment>
     </unit>
-    <unit id="home.welcome-back">
-      <notes>
-        <note category="location">src/app/layout/page/home-page/home-page.html:5,7</note>
-        <note category="description">Greeting text shown on home page</note>
-      </notes>
-      <segment>
-        <source> Welcome back, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> ! </source>
-        <target> Bon retour, <ph id="0" equiv="INTERPOLATION" disp="{{ user()!.name }}" /> ! </target>
-      </segment>
-    </unit>
     <unit id="home.create-new-group">
       <notes>
         <note category="location">src/app/layout/page/home-page/home-page.html:14,17</note>
@@ -229,6 +219,218 @@
       <segment>
         <source>Dismiss</source>
         <target>Fermer</target>
+      </segment>
+    </unit>
+    <unit id="create-expense.form.title">
+      <notes>
+        <note category="location">src/app/core/expense/create-expense-form-dialog/create-expense-form-dialog.html:2,4</note>
+        <note category="description">Create new expense form title</note>
+      </notes>
+      <segment>
+        <source>Add expense</source>
+        <target>Ajouter une dépense</target>
+      </segment>
+    </unit>
+    <unit id="create-expense.form.label.amount">
+      <notes>
+        <note category="location">src/app/core/expense/create-expense-form-dialog/create-expense-form-dialog.html:5,7</note>
+        <note category="description">Label for amount input field</note>
+      </notes>
+      <segment>
+        <source>Amount (€)</source>
+        <target>Montant (€)</target>
+      </segment>
+    </unit>
+    <unit id="create-expense.form.label.group">
+      <notes>
+        <note category="location">src/app/core/expense/create-expense-form-dialog/create-expense-form-dialog.html:15,18</note>
+        <note category="description">Label to select group to which the new expense will be
+        added</note>
+      </notes>
+      <segment>
+        <source>Select group</source>
+        <target>Sélectionner un groupe</target>
+      </segment>
+    </unit>
+    <unit id="create-expense.form.no-group">
+      <notes>
+        <note category="location">src/app/core/expense/create-expense-form-dialog/create-expense-form-dialog.html:28,37</note>
+        <note category="description">Text shown in the group selection when the user is not member of any
+            group</note>
+      </notes>
+      <segment>
+        <source>No groups available. You must belong to a group to start creating expenses.</source>
+        <target>Aucun groupe disponible. Vous devez appartenir à un groupe pour créer des dépenses.</target>
+      </segment>
+    </unit>
+    <unit id="create-expense.form.submit">
+      <notes>
+        <note category="location">src/app/core/expense/create-expense-form-dialog/create-expense-form-dialog.html:41,44</note>
+        <note category="description">Button to submit the new expense form</note>
+      </notes>
+      <segment>
+        <source> Create </source>
+        <target>Créer</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.no-group">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:10,15</note>
+        <note category="description">Text in the groups over view list to indicate the user has no
+        group</note>
+      </notes>
+      <segment>
+        <source> You have no group yet. Create one to start sharing expenses. </source>
+        <target>Vous n'avez pas encore de groupe. Créez-en un pour commencer à partager des dépenses.</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.owner">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:24,26</note>
+        <note category="description">Label for group owner; located in groups overview list</note>
+      </notes>
+      <segment>
+        <source>Owner</source>
+        <target>Propriétaire</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.created-at">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:30,33</note>
+        <note category="description">Label for group creation date; located in groups overview
+                  list</note>
+      </notes>
+      <segment>
+        <source>Created</source>
+        <target>Créé</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.last-activity">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:37,40</note>
+        <note category="description">Label for group's last activity; located in groups overview
+                    list</note>
+      </notes>
+      <segment>
+        <source>Last activity</source>
+        <target>Dernière activité</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.balance">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:45,49</note>
+        <note category="description">Label for logged user's balance within the group; located in groups overview
+                    list</note>
+      </notes>
+      <segment>
+        <source>Your balance</source>
+        <target>Votre solde</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.settled-up">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:58,63</note>
+        <note category="description">Text to indicate all debts are settled for the group; located in groups overview
+                    list</note>
+      </notes>
+      <segment>
+        <source>Settled up</source>
+        <target>Soldé</target>
+      </segment>
+    </unit>
+    <unit id="groups-overview.no-expense">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/group-overview-list/group-overview-list.html:65,72</note>
+        <note category="description">Text to indicate the group does not contain any expense; located in groups
+                    overview list</note>
+      </notes>
+      <segment>
+        <source>No expense yet</source>
+        <target>Aucune dépense pour l'instant</target>
+      </segment>
+    </unit>
+    <unit id="home.groups.title">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:13,15</note>
+        <note category="description">Title for the groups section located in the home page</note>
+      </notes>
+      <segment>
+        <source> Groups </source>
+        <target>Groupes</target>
+      </segment>
+    </unit>
+    <unit id="home.new-expense-button">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.html:32,37</note>
+        <note category="description">Floating action button to create a new expense</note>
+      </notes>
+      <segment>
+        <source> New expense </source>
+        <target>Nouvelle dépense</target>
+      </segment>
+    </unit>
+    <unit id="group.overview.load.error">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.ts:65</note>
+        <note category="description">Message shown to the user when the application failed to load groups overview from the home page</note>
+      </notes>
+      <segment>
+        <source>Failed to load groups. Please try again in a few minutes.</source>
+        <target>Impossible de charger les groupes. Veuillez réessayer dans quelques minutes.</target>
+      </segment>
+    </unit>
+    <unit id="expense.creation.success">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/home-page.ts:121</note>
+        <note category="description">Message shown to the user when he successfully created a new expense</note>
+      </notes>
+      <segment>
+        <source>Expense created successfully.</source>
+        <target>Dépense créée avec succès.</target>
+      </segment>
+    </unit>
+    <unit id="home.latest-expenses">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/latest-expenses/latest-expenses.html:2,8</note>
+        <note category="description">Title for the latest expenses section located in the home page</note>
+      </notes>
+      <segment>
+        <source> Latest expenses
+</source>
+        <target>Dernières dépenses</target>
+      </segment>
+    </unit>
+    <unit id="home.latest-expenses.paid-by">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/latest-expenses/latest-expenses.html:21,25</note>
+        <note category="description">Label to indicate who payed the expense located in latest expenses
+                section</note>
+      </notes>
+      <segment>
+        <source>Paid by</source>
+        <target>Payé par</target>
+      </segment>
+    </unit>
+    <unit id="home.latest-expenses.date">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/latest-expenses/latest-expenses.html:27,31</note>
+        <note category="description">Label to indicate the expense's date; located in the latest expenses
+                section</note>
+      </notes>
+      <segment>
+        <source>Date</source>
+        <target>Date</target>
+      </segment>
+    </unit>
+    <unit id="home.latest-expenses.group">
+      <notes>
+        <note category="location">src/app/layout/page/home-page/latest-expenses/latest-expenses.html:33,38</note>
+        <note category="description">Label to indicate to which group the expense belongs to; located in the latest
+                expenses section</note>
+      </notes>
+      <segment>
+        <source>Group</source>
+        <target>Groupe</target>
       </segment>
     </unit>
   </file>
