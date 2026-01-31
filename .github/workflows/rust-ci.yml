@@ -21,7 +21,8 @@ jobs:
     name: Lints
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
 
       - run: rustup show active-toolchain --verbose
       - run: rustup component add rustfmt clippy
@@ -34,7 +35,8 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
 
       - run: rustup show active-toolchain --verbose
       - uses: Swatinem/rust-cache@v2
@@ -46,7 +48,8 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
 
       - run: rustup show active-toolchain --verbose
       - uses: Swatinem/rust-cache@v2
