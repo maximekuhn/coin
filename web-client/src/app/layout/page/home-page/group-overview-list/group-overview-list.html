@@ -18,9 +18,14 @@
                 Last activity: {{ group.lastActivity | date }} |
               }
               @if (group.currentUserBalanceEuros) {
-                Your balance: {{ group.currentUserBalanceEuros }} €
+                Your balance:
+                <span
+                  [class.negative-balance]="group.currentUserBalanceEuros < 0"
+                  [class.positive-balance]="group.currentUserBalanceEuros > 0"
+                  >{{ group.currentUserBalanceEuros }}€</span
+                >
               } @else if (group.lastActivity) {
-                Settled up
+                <span class="settled-up">Settled up</span>
               } @else {
                 No expense yet
               }
