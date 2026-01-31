@@ -97,6 +97,19 @@ def add_target(unit, target):
     segment.append(new_target)
 
 
+def get_file_element(target_root):
+    file_elem = target_root.find(".//x:file", NS)
+    if file_elem is None:
+        die("No <file> element found in target XLIFF document")
+    return file_elem
+
+
+def apply_xliff_namespace(elem, ns):
+    elem.tag = f"{{{ns}}}{elem.tag}"
+    for child in list(elem):
+        apply_xliff_namespace(child, ns)
+
+
 def main(locale_code, dry_run, verbose):
     ET.register_namespace("", "urn:oasis:names:tc:xliff:document:2.0")
     target_tree = ET.parse("src/locale/messages.{}.xlf".format(locale_code))
@@ -107,14 +120,22 @@ def main(locale_code, dry_run, verbose):
 
     target_units = get_trusted_units(target_root)
     target_units_map = {unit.get("id"): unit for unit in target_units}
+    target_file_elem = get_file_element(target_root)
 
     actions = {}
 
     for llm_unit in llm_units:
         llm_unit_id = llm_unit.get("id")
-        if llm_unit_id not in target_units_map:
-            die(f"<unit> '{llm_unit_id}' not found in target file")
 
+        if llm_unit_id not in target_units_map:
+            # Create new <unit> in target file and add <target> from LLM.
+            new_unit = ET.fromstring(ET.tostring(llm_unit))
+            apply_xliff_namespace(new_unit, NS["x"])
+            target_file_elem.append(new_unit)
+            actions[llm_unit_id] = "NEW"
+            continue
+
+        # <unit> already exists in target file, update or add <target> if needed.
         target_unit = target_units_map[llm_unit_id]
         had_target = remove_target(target_unit)
         add_target(target_unit, llm_unit.find("segment/target"))
