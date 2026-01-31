@@ -22,6 +22,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { OverallBalance } from './overall-balance/overall-balance';
 import { LatestExpenses } from './latest-expenses/latest-expenses';
 import { MatDividerModule } from '@angular/material/divider';
+import { CreateExpenseFormDialog } from '../../../core/expense/create-expense-form-dialog/create-expense-form-dialog';
+import {
+  CreateExpenseFormDialogResult,
+  CreateExpenseFormResultType,
+} from '../../../core/expense/create-expense-form-dialog/create-expense-form-dialog.result';
+import { translateExpenseError } from '../../../core/expense/expense.i18n';
 
 @Component({
   selector: 'app-home-page',
@@ -91,6 +97,35 @@ export class HomePage implements OnInit {
             SnackbarType.Error,
             SnackbarDuration.Short,
             translateGroupError(result.error),
+            SnackbarAction.Dismiss,
+          );
+        }
+      });
+  }
+
+  openCreateExpenseDialog() {
+    const dialogRef = this.dialog.open(CreateExpenseFormDialog);
+
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result: CreateExpenseFormDialogResult | undefined) => {
+        if (result === undefined) {
+          return;
+        }
+        if (result.status === CreateExpenseFormResultType.Success) {
+          this.snackbarService.open(
+            SnackbarType.Success,
+            SnackbarDuration.Short,
+            $localize`:Message shown to the user when he successfully created a new expense@@expense.creation.success:Expense created successfully.`,
+            SnackbarAction.Ok,
+          );
+          this.homeFacade.loadGroups();
+        } else {
+          this.snackbarService.open(
+            SnackbarType.Error,
+            SnackbarDuration.Short,
+            translateExpenseError(result.error),
             SnackbarAction.Dismiss,
           );
         }

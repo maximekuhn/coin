@@ -24,6 +24,10 @@
       <app-group-overview-list />
     </div>
   </div>
+  <button matFab extended class="new-expense-button" (click)="openCreateExpenseDialog()">
+    <mat-icon>add_card</mat-icon>
+    New expense
+  </button>
 } @else {
   <div class="home-layout-guest">
     <h1 i18n="Main title for the home page in guest mode@@home.title">Welcome to coin</h1>
