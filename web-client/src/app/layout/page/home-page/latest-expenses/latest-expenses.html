@@ -1,1 +1,22 @@
 <h2>Latest expenses</h2>
+@if (isLoading()) {
+  <div class="latest-expenses-spinner">
+    <mat-spinner />
+  </div>
+} @else {
+  <mat-list>
+    @for (expense of latestExpenses().expenses; track expense.id) {
+      <mat-list-item>
+        <mat-icon matListItemIcon>receipt</mat-icon>
+        <h3 matListItemTitle>{{ expense.totalEuros | currency: 'EUR' }}</h3>
+
+        <div matListItemLine>
+          <span>
+            Paid by: {{ formatPayerName(expense.paidBy) }} | Date: {{ expense.occurredAt | date }} |
+            Group: <span class="expense-group-name">{{ expense.group.name }}</span>
+          </span>
+        </div>
+      </mat-list-item>
+    }
+  </mat-list>
+}

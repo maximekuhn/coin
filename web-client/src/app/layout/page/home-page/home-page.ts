@@ -71,6 +71,7 @@ export class HomePage implements OnInit {
   ngOnInit(): void {
     if (this.authService.authState().status === AuthStatus.Authenticated) {
       this.homeFacade.loadGroups();
+      this.homeFacade.loadLatestExpenses();
     }
   }
 
@@ -120,7 +121,9 @@ export class HomePage implements OnInit {
             $localize`:Message shown to the user when he successfully created a new expense@@expense.creation.success:Expense created successfully.`,
             SnackbarAction.Ok,
           );
+
           this.homeFacade.loadGroups();
+          this.homeFacade.loadLatestExpenses();
         } else {
           this.snackbarService.open(
             SnackbarType.Error,

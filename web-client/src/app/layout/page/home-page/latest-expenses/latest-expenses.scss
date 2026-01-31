@@ -1,0 +1,11 @@
+.latest-expenses-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.expense-group-name:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
