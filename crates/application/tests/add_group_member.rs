@@ -124,7 +124,7 @@ async fn user_already_member() -> anyhow::Result<()> {
         .groups()
         .create_empty_group("Trip Summer 2026", alice_id)
         .await?;
-     ctx.groups().add_member(group_id, alice_id, bob_id).await?;
+    ctx.groups().add_member(group_id, alice_id, bob_id).await?;
 
     // When
     let err = ctx
