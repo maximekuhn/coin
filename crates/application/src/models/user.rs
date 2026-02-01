@@ -1,6 +1,6 @@
 use domain::types::{user_id::UserId, username::Username};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct UserSummary {
     pub id: UserId,
     pub name: Username,

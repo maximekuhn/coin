@@ -94,7 +94,7 @@ pub struct Output {
     pub total_items: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct ExpenseSummary {
     pub id: ExpenseId,
     pub group: GroupSummary,

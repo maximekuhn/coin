@@ -1,4 +1,10 @@
-use application::commands::create_expense::{CreateExpenseCommand, IncludeParticipants};
+use std::num::NonZeroUsize;
+
+use application::{
+    commands::create_expense::{CreateExpenseCommand, IncludeParticipants},
+    pagination::Pagination,
+    queries::get_latest_expenses_for_user::{self, GetLatestExpensesForUserQuery},
+};
 use chrono::{DateTime, Utc};
 use domain::{
     entities::ExpenseEntry,
@@ -68,6 +74,34 @@ impl<'a> ExpenseEntriesHelper<'a> {
         .await?;
         tx.commit().await?;
         Ok(id.value())
+    }
+
+    pub async fn get_latest_expenses(
+        &mut self,
+        user_id: Uuid,
+    ) -> anyhow::Result<get_latest_expenses_for_user::Output> {
+        self.get_latest_expenses_with_pagination(user_id, 1, 1_000)
+            .await
+    }
+
+    pub async fn get_latest_expenses_with_pagination(
+        &mut self,
+        user_id: Uuid,
+        page: usize,
+        page_size: usize,
+    ) -> anyhow::Result<get_latest_expenses_for_user::Output> {
+        let mut tx = self.pool.begin().await?;
+        let output = GetLatestExpensesForUserQuery {
+            current_user: UserId::new(user_id)?,
+            pagination: Pagination::new(
+                NonZeroUsize::new(page).unwrap(),
+                NonZeroUsize::new(page_size).unwrap(),
+            )?,
+        }
+        .handle(&mut tx)
+        .await?;
+        tx.commit().await?;
+        Ok(output)
     }
 
     pub async fn assert_expense_has_a_single_entry(
