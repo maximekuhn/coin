@@ -15,7 +15,12 @@ pub fn compute_user_balance(expenses: &[Expense], user_id: UserId) -> Option<Mon
             continue;
         }
 
-        let share = expense.split_evenly();
+        let shares = expense.participants.len() + 1;
+        if shares == 1 {
+            continue;
+        }
+
+        let share = Money::from_cents((expense.total.cents() as usize / shares) as i64);
 
         if expense.is_payer(&user_id) {
             balance += share;

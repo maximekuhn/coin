@@ -1,7 +1,16 @@
-use application::commands::{
-    add_group_member::AddGroupMemberCommand, create_empty_group::CreateEmptyGroupCommand,
+use std::num::NonZeroUsize;
+
+use application::{
+    commands::{
+        add_group_member::AddGroupMemberCommand, create_empty_group::CreateEmptyGroupCommand,
+    },
+    pagination::Pagination,
+    queries::{self, get_groups_for_user::GetGroupsForUserQuery},
 };
-use domain::types::{group_id::GroupId, user_id::UserId};
+use domain::types::{
+    group_id::GroupId,
+    user_id::{self, UserId},
+};
 use uuid::Uuid;
 
 pub struct GroupsHelper<'a> {
@@ -45,6 +54,44 @@ impl<'a> GroupsHelper<'a> {
         .await?;
         tx.commit().await?;
         Ok(())
+    }
+
+    pub async fn get_all_for_user(
+        &mut self,
+        user_id: Uuid,
+    ) -> anyhow::Result<queries::get_groups_for_user::Output> {
+        let mut tx = self.pool.begin().await?;
+        let output = GetGroupsForUserQuery {
+            current_user: UserId::new(user_id)?,
+            pagination: Pagination::new(
+                NonZeroUsize::new(1).unwrap(),
+                NonZeroUsize::new(1_000).unwrap(),
+            )?,
+        }
+        .handle(&mut tx)
+        .await?;
+        tx.commit().await?;
+        Ok(output)
+    }
+
+    pub async fn get_all_for_user_with_pagination(
+        &mut self,
+        user_id: Uuid,
+        page: usize,
+        page_size: usize,
+    ) -> anyhow::Result<queries::get_groups_for_user::Output> {
+        let mut tx = self.pool.begin().await?;
+        let output = GetGroupsForUserQuery {
+            current_user: UserId::new(user_id)?,
+            pagination: Pagination::new(
+                NonZeroUsize::new(page).unwrap(),
+                NonZeroUsize::new(page_size).unwrap(),
+            )?,
+        }
+        .handle(&mut tx)
+        .await?;
+        tx.commit().await?;
+        Ok(output)
     }
 
     pub async fn assert_group_exists(

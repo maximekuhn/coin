@@ -41,11 +41,6 @@ impl Expense {
     pub fn is_payer(&self, user_id: &UserId) -> bool {
         self.payer_id == *user_id
     }
-
-    pub fn split_evenly(&self) -> Money {
-        let shares = self.participants.len() + 1;
-        Money::from_cents((self.total.cents() as usize / shares) as i64)
-    }
 }
 
 impl From<ExpenseEntry> for Expense {
