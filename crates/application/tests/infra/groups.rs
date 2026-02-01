@@ -5,7 +5,9 @@ use application::{
         add_group_member::AddGroupMemberCommand, create_empty_group::CreateEmptyGroupCommand,
     },
     pagination::Pagination,
-    queries::{self, get_groups_for_user::GetGroupsForUserQuery},
+    queries::{
+        self, get_group_by_id::GetGroupByIdQuery, get_groups_for_user::GetGroupsForUserQuery,
+    },
 };
 use domain::types::{
     group_id::GroupId,
@@ -92,6 +94,22 @@ impl<'a> GroupsHelper<'a> {
         .await?;
         tx.commit().await?;
         Ok(output)
+    }
+
+    pub async fn get_group_by_id(
+        &mut self,
+        group_id: Uuid,
+        user_id: Uuid,
+    ) -> anyhow::Result<Option<domain::entities::Group>> {
+        let mut tx = self.pool.begin().await?;
+        let result = GetGroupByIdQuery {
+            id: GroupId::new(group_id)?,
+            current_user: UserId::new(user_id)?,
+        }
+        .handle(&mut tx)
+        .await?;
+        tx.commit().await?;
+        Ok(result)
     }
 
     pub async fn assert_group_exists(
