@@ -1,0 +1,10 @@
+@if (isLoading()) {
+  <div class="group-loading-spinner">
+    <mat-spinner />
+  </div>
+}
+@if (group() !== null) {
+  <div class="group-page-layout">
+    <h1>{{ group()!.name }}</h1>
+  </div>
+}

@@ -31,7 +31,10 @@
                 Label to indicate to which group the expense belongs to; located in the latest
                 expenses section@@home.latest-expenses.group"
               >Group</ng-container
-            >: <span class="expense-group-name">{{ expense.group.name }}</span>
+            >:
+            <a class="expense-group-name" (click)="navigateToGroup(expense.group.id)">{{
+              expense.group.name
+            }}</a>
           </span>
         </div>
       </mat-list-item>

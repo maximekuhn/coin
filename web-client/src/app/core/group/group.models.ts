@@ -11,3 +11,11 @@ export interface UserOverview {
   id: string;
   name: string;
 }
+
+export interface Group {
+  id: string;
+  name: string;
+  ownerId: string;
+  members: string[];
+  createdAt: Date;
+}

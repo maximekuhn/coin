@@ -3,12 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import {
   BackendCreateGroupResponse,
+  BackendGroup,
   BackendGroupOverview,
   backendGroupOverviewListToGroupOverviewList,
+  backendGroupToGroup,
 } from './group.http-models';
 import { environment } from '../../../environments/environment';
 import { mapToGroupError } from './group.error-mapper';
-import { GroupOverview } from './group.models';
+import { Group, GroupOverview } from './group.models';
 import { ListResponse } from '../../shared/api/list-response';
 
 @Injectable({
@@ -39,5 +41,14 @@ export class GroupService {
         ),
         catchError((err) => throwError(() => mapToGroupError(err))),
       );
+  }
+
+  getGroupById(groupId: string): Observable<Group> {
+    return this.http.get<BackendGroup>(`${environment.API_URL}/api/groups/${groupId}`, {}).pipe(
+      map((res: BackendGroup) => backendGroupToGroup(res)),
+      catchError((err) => {
+        return throwError(() => mapToGroupError(err));
+      }),
+    );
   }
 }

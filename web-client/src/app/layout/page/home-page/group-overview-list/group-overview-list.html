@@ -12,7 +12,7 @@
   } @else {
     <mat-nav-list>
       @for (group of groups().groups; track group.id) {
-        <mat-list-item class="group-list-item">
+        <a mat-list-item class="group-list-item" (click)="navigateToGroup(group.id)">
           <mat-icon matListItemIcon>groups</mat-icon>
 
           <h3 matListItemTitle>{{ group.name }}</h3>
@@ -74,7 +74,7 @@
               <mat-icon matListItemIcon class="arrow">arrow_forward</mat-icon>
             </span>
           </div>
-        </mat-list-item>
+        </a>
       }
     </mat-nav-list>
   }
