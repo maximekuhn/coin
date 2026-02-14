@@ -54,6 +54,7 @@ fn routes(state: AppState) -> Router {
         .route("/auth/session-info", post(handlers::auth::session_info))
         .route("/groups", post(handlers::group::create))
         .route("/groups/overview", get(handlers::group::get_all_overview))
+        .route("/groups/{group_id}", get(handlers::group::get_by_id))
         .route(
             "/groups/{group_id}/members",
             post(handlers::group::add_member),

@@ -6,7 +6,10 @@ use application::{
         create_empty_group::{CreateEmptyGroupCommand, CreateEmptyGroupError},
     },
     pagination::Pagination,
-    queries::get_groups_for_user::{GetGroupsForUserError, GetGroupsForUserQuery},
+    queries::{
+        get_group_by_id::{GetGroupByIdError, GetGroupByIdQuery},
+        get_groups_for_user::{GetGroupsForUserError, GetGroupsForUserQuery},
+    },
 };
 use axum::{
     Json,
@@ -81,7 +84,7 @@ pub async fn get_all_overview(
     State(state): State<AppState>,
     User(user, _, _): User,
     Query(query): Query<GetAllQuery>,
-) -> Result<Json<ListResponse<GroupDto>>, ApiError> {
+) -> Result<Json<ListResponse<GroupOverviewDto>>, ApiError> {
     let pagination = Pagination::new_from_optional(query.page, query.page_size)?;
 
     let mut tx = state.db_pool.begin().await?;
@@ -102,12 +105,45 @@ pub async fn get_all_overview(
         "query output summary"
     );
 
-    let groups = output.groups.into_iter().map(GroupDto::from).collect();
+    let groups = output
+        .groups
+        .into_iter()
+        .map(GroupOverviewDto::from)
+        .collect();
     Ok(Json(ListResponse {
         data: groups,
         request_pagination: pagination.into(),
         total_items: output.total_items,
     }))
+}
+
+pub async fn get_by_id(
+    State(state): State<AppState>,
+    User(user, _, _): User,
+    Path(group_id): Path<Uuid>,
+) -> Result<Json<GroupDto>, ApiError> {
+    let group_id = GroupId::new(group_id)?;
+
+    let mut tx = state.db_pool.begin().await?;
+
+    let result = GetGroupByIdQuery {
+        id: group_id,
+        current_user: user.id,
+    }
+    .handle(&mut tx)
+    .await
+    .map_err(get_group_by_id_err_to_api_error)?;
+
+    tx.commit().await?;
+
+    match result {
+        Some(group) => Ok(Json(group.into())),
+        None => Err(ApiError {
+            kind: ErrorKind::NotFound,
+            message: Some("requested group not found".to_string()),
+            detail: None,
+        }),
+    }
 }
 
 #[derive(Deserialize)]
@@ -136,7 +172,7 @@ pub struct GetAllQuery {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GroupDto {
+pub struct GroupOverviewDto {
     id: Uuid,
     name: String,
     owner: UserDto,
@@ -154,7 +190,17 @@ struct UserDto {
     name: String,
 }
 
-impl From<application::queries::get_groups_for_user::GroupSummary> for GroupDto {
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GroupDto {
+    id: Uuid,
+    name: String,
+    owner_id: Uuid,
+    members: Vec<Uuid>,
+    created_at: DateTime<Utc>,
+}
+
+impl From<application::queries::get_groups_for_user::GroupSummary> for GroupOverviewDto {
     fn from(group_summary: application::queries::get_groups_for_user::GroupSummary) -> Self {
         Self {
             id: group_summary.id.value(),
@@ -176,6 +222,22 @@ impl From<application::queries::get_groups_for_user::UserSummary> for UserDto {
         Self {
             id: user_summary.id.value(),
             name: user_summary.name.value(),
+        }
+    }
+}
+
+impl From<domain::entities::Group> for GroupDto {
+    fn from(group: domain::entities::Group) -> Self {
+        Self {
+            id: group.id.value(),
+            name: group.name.value(),
+            owner_id: group.owner_id.value(),
+            members: group
+                .members
+                .into_iter()
+                .map(|user_id| user_id.value())
+                .collect(),
+            created_at: group.created_at,
         }
     }
 }
@@ -237,6 +299,21 @@ fn add_member_err_to_api_error(err: AddGroupMemberError) -> ApiError {
 fn get_groups_for_user_err_to_api_error(err: GetGroupsForUserError) -> ApiError {
     match err {
         GetGroupsForUserError::Database(error) => ApiError {
+            kind: ErrorKind::Internal,
+            message: None,
+            detail: Some(error.to_string()),
+        },
+    }
+}
+
+fn get_group_by_id_err_to_api_error(err: GetGroupByIdError) -> ApiError {
+    match err {
+        GetGroupByIdError::CurrentUserNotInGroup => ApiError {
+            kind: ErrorKind::ActionForbidden,
+            message: None,
+            detail: Some("user does not belong to the requested group".to_string()),
+        },
+        GetGroupByIdError::Database(error) => ApiError {
             kind: ErrorKind::Internal,
             message: None,
             detail: Some(error.to_string()),

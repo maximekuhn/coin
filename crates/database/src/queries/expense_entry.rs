@@ -226,12 +226,16 @@ pub async fn get_all_active_for_user(
         WITH paged_expenses AS (
             SELECT ee.id
             FROM expense_entry ee
-            LEFT JOIN expense_entry_participant eep ON eep.expense_entry_id = ee.id
             WHERE ee.status IS NULL
-            AND (
-                eep.participant_id = ?
-                OR ee.payer_id = ?
-            )
+              AND (
+                  EXISTS (
+                    SELECT 1 
+                    FROM expense_entry_participant eep
+                    WHERE eep.expense_entry_id = ee.id
+                      AND eep.participant_id = ?
+                  )
+                  OR ee.payer_id = ?
+              )
             ORDER BY ee.occurred_at DESC, ee.id
             LIMIT ? OFFSET ?
         )
